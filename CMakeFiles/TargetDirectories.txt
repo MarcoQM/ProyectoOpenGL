@@ -1,0 +1,3 @@
+/home/marco/ProyectosQt/ProyectoFinalCG/CMakeFiles/rebuild_cache.dir
+/home/marco/ProyectosQt/ProyectoFinalCG/CMakeFiles/edit_cache.dir
+/home/marco/ProyectosQt/ProyectoFinalCG/CMakeFiles/ProyectoFinalCG.dir

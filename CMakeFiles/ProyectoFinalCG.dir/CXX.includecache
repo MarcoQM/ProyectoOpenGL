@@ -1,0 +1,42 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/marco/ProyectosQt/ProyectoFinalCG/OBJFile.h
+fstream
+-
+glm/glm.hpp
+-
+GL/glew.h
+/home/marco/ProyectosQt/ProyectoFinalCG/GL/glew.h
+GLFW/glfw3.h
+/home/marco/ProyectosQt/ProyectoFinalCG/GLFW/glfw3.h
+vector
+-
+iostream
+-
+iomanip
+-
+
+/home/marco/ProyectosQt/ProyectoFinalCG/main.cpp
+iostream
+-
+filesystem
+-
+vector
+-
+GL/glew.h
+-
+GLFW/glfw3.h
+-
+glm/gtc/matrix_transform.hpp
+-
+glm/glm.hpp
+-
+OBJFile.h
+/home/marco/ProyectosQt/ProyectoFinalCG/OBJFile.h
+
