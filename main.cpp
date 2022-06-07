@@ -67,6 +67,12 @@ int main()
                 std::cout << "Se creo la carpeta frames" << std::endl :
                     std::cout << "Error al crear la carpeta frames, talvez ya existe" << std::endl;
 
+    //std::cout<<objConejo.GetIndicesVertices()<<std::endl;
+    /*for(unsigned i=0;i<objConejo.GetIndicesVertices().size();++i)
+    {
+        std::cout << objConejo.GetIndicesVertices()[i] << std::endl;
+    }*/
+
 
 
     /*std::vector<glm::vec3> vertices2;

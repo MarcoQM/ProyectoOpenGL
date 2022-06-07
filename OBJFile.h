@@ -15,23 +15,29 @@ class OBJFile
 {
 public:
     using Vertices = std::vector<glm::vec3>;
-    using TextureCoordinates =  std::vector<float>;
-    using Normals =  std::vector<float>;
-    using Indices =  std::vector<unsigned short>;
+    using Normals =  std::vector<glm::vec3>;
+    using Uvs = std::vector<glm::vec2>;
+    using IndicesVertices =  std::vector<unsigned short>;
+    using IndicesNormals =  std::vector<unsigned short>;
+    using IndicesUvs = std::vector<unsigned short>;
 private:
     Vertices m_VertexPositions;
-    TextureCoordinates m_TextureCoordinates;
     Normals m_Normals;
-    Indices m_Indices;
+    Uvs m_Uvs;
+    IndicesVertices m_IndicesVertex;
+    IndicesNormals m_IndicesNormals;
+    IndicesUvs m_IndicesUvs;
 public:
     OBJFile();
     void readFileOBJ(const std::string& filename);
     void writeFrames(const std::string& directory, unsigned index);
     void writeFramesInVTK(const std::string& directory, unsigned index);
     Vertices& GetVertices() ;
-    TextureCoordinates& GetTextureCoordinates();
     Normals& GetNormals();
-    Indices& GetIndices();
+    Uvs& GetUvs();
+    IndicesVertices& GetIndicesVertices();
+    IndicesNormals& GetIndicesNormals();
+    IndicesUvs& GetIndicesUvs();
 };
 
 #endif // OBJFILE_H

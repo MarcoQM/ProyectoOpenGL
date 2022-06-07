@@ -22,40 +22,56 @@ void OBJFile::readFileOBJ(const std::string& filename) {
             lineStream >> firstSymbol;
             if (firstSymbol == "v")
             {
-                float vertexPosition{};
                 float x,y,z;
                 lineStream >> x >> y >> z;
                 glm::vec3 vertice(x, y, z);
                 m_VertexPositions.emplace_back(vertice);
             }
-            else if (firstSymbol == "vt")
-            {
-                float textureCoordinate{};
-                for (unsigned int i = 0; i < 2; ++i)
-                {
-                    lineStream >> textureCoordinate;
-                    m_TextureCoordinates.emplace_back(textureCoordinate);
-                }
-            }
             else if (firstSymbol == "vn")
             {
-                float normal{};
-                for (unsigned int i = 0; i < 3; ++i)
-                {
-                    lineStream >> normal;
-                    m_Normals.emplace_back(normal);
-                }
+                float x,y,z;
+                lineStream >> x >> y >> z;
+                glm::vec3 normal(x, y, z);
+                m_Normals.emplace_back(normal);
             }
             else if (firstSymbol == "f")
             {
-                unsigned short a;
-                for (unsigned int i = 0; i < 3; ++i)
-                {
-                    lineStream >> a ;
-                    m_Indices.emplace_back(a);
-                }
+                std::string vertex1, vertex2, vertex3;
+                unsigned int vertexIndex[3] = {0,0,0};
+                unsigned int uvIndex[3]     = {0,0,0};
+                unsigned int normalIndex[3] = {0,0,0};
+
+                lineStream >> vertex1 >> vertex2 >> vertex3;
+                auto c_vertex1 = vertex1.c_str();
+                auto c_vertex2 = vertex2.c_str();
+                auto c_vertex3 = vertex3.c_str();
+
+                int  matches = 0;
+                matches += std::sscanf(c_vertex1, "%d/%d/%d", &vertexIndex[0], &uvIndex[0], &normalIndex[0]);
+                matches += std::sscanf(c_vertex2, "%d/%d/%d", &vertexIndex[1], &uvIndex[1], &normalIndex[1]);
+                matches += std::sscanf(c_vertex3, "%d/%d/%d", &vertexIndex[2], &uvIndex[2], &normalIndex[2]);
+
+                //std::cout<<"AQUI "<<vertexIndex[0]<<" "<<uvIndex[0]<<" "<<normalIndex[0]<<" "<<std::endl;
+                //std::cout<<matches<<std::endl;
+
+                m_IndicesVertex.push_back(vertexIndex[0]);
+                m_IndicesVertex.push_back(vertexIndex[1]);
+                m_IndicesVertex.push_back(vertexIndex[2]);
+                m_IndicesUvs.push_back(uvIndex[0]);
+                m_IndicesUvs.push_back(uvIndex[1]);
+                m_IndicesUvs.push_back(uvIndex[2]);
+                m_IndicesNormals.push_back(normalIndex[0]);
+                m_IndicesNormals.push_back(normalIndex[1]);
+                m_IndicesNormals.push_back(normalIndex[2]);
             }
         }
+
+        for (unsigned int i = 0; i < m_IndicesVertex.size(); ++i)
+        {
+            /* code */
+        }
+        
+
     }
 }
 void OBJFile::writeFrames(const std::string& directory, unsigned index)
@@ -74,9 +90,9 @@ void OBJFile::writeFrames(const std::string& directory, unsigned index)
         frame <<"v "<<std::setprecision(20)<<it->x<<" "<<it->y<<" "<<it->z<<std::endl;
     }
 
-    for(unsigned i = 0; i < m_Indices.size(); i+=3) {
+    for(unsigned i = 0; i < m_IndicesVertex.size(); i+=3) {
 
-        frame<<"f "<<m_Indices[i]<<" "<<m_Indices[i+1]<<" "<<m_Indices[i+2]<<std::endl;
+        frame<<"f "<<m_IndicesVertex[i]<<" "<<m_IndicesVertex[i+1]<<" "<<m_IndicesVertex[i+2]<<std::endl;
 
     }
 }
@@ -140,14 +156,22 @@ OBJFile::Vertices& OBJFile::GetVertices() {
     return m_VertexPositions;
 }
 
-OBJFile::TextureCoordinates& OBJFile::GetTextureCoordinates() {
-    return m_TextureCoordinates;
-}
-
 OBJFile::Normals& OBJFile::GetNormals() {
     return m_Normals;
 }
 
-OBJFile::Indices& OBJFile::GetIndices() {
-    return m_Indices;
+OBJFile::Uvs& OBJFile::GetUvs() {
+    return m_Uvs;
+}
+
+OBJFile::IndicesVertices& OBJFile::GetIndicesVertices() {
+    return m_IndicesVertex;
+}
+
+OBJFile::IndicesUvs& OBJFile::GetIndicesUvs() {
+    return m_IndicesUvs;
+}
+
+OBJFile::IndicesNormals& OBJFile::GetIndicesNormals() {
+    return m_IndicesNormals;
 }
