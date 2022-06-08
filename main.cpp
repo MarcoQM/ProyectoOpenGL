@@ -46,20 +46,11 @@ int main()
     }
 
 
-    /*std::vector<glm::vec3> vertices = {glm::vec3(0.0f, 0.5f, 0.0f),
-                                       glm::vec3(0.5f, -0.5f, 0.0f),
-                                       glm::vec3(-0.5f, -0.5f, 0.0f)}; //positions*/
-    /*std::vector<glm::vec3> vertices = {glm::vec3(0.5f, 0.5f, 0.0f),
-                                           glm::vec3(0.5f, -0.5f, 0.0f),
-                                           glm::vec3(-0.5f, -0.5f, 0.0f),
-                                       glm::vec3(0.5f, 0.5f, 0.0f),
-                                            glm::vec3(-0.5f, -0.5f, 0.0f),
-                                        glm::vec3(-0.5f, 0.5f, 0.0f)};*/
     std::vector<glm::vec3> vertices;
     std::vector<glm::vec2> uvs;
     std::vector<glm::vec3> normals;
 
-    OBJFile::loadOBJ("conejo2.obj", vertices, uvs, normals);
+    OBJFile::loadOBJ("conejo1.obj", vertices, uvs, normals);
 
     for (unsigned i = 0; i < uvs.size(); i++)
     {

@@ -135,7 +135,10 @@ void OBJFile::writeFramesInOBJ(const std::string& directory,
     }
 }
 
-/*void OBJFile::writeFramesInVTK(const std::string& directory, unsigned index)
+void OBJFile::writeFramesInVTK(const std::string& directory, unsigned index,
+                            std::vector<glm::vec3>& out_vertices, 
+                            std::vector<glm::vec2>& out_uvs, 
+                            std::vector<glm::vec3>& out_normals)
 {
     std::string fileName  = directory+"/frame_"+std::to_string(index)+".vtk";
 
@@ -152,40 +155,40 @@ void OBJFile::writeFramesInOBJ(const std::string& directory,
     frame<<"Particle system"<<std::endl;
     frame<<"ASCII"<<std::endl;
     frame<<"DATASET UNSTRUCTURED_GRID"<<std::endl;
-    frame<<"POINTS "<< m_VertexPositions.size()<< " float"<< std::endl;
+    frame<<"POINTS "<< out_vertices.size()<< " float"<< std::endl;
 
-    for(auto it = m_VertexPositions.begin(); it != m_VertexPositions.end(); ++it)
+    for(auto it = out_vertices.begin(); it != out_vertices.end(); ++it)
     {
 
         frame <<it->x<<" "<<it->y<<" "<<it->z<<std::endl;
     }
 
-    frame<<"CELLS "<< m_VertexPositions.size()<< " "<< m_VertexPositions.size()*2<< std::endl;
+    frame<<"CELLS "<< out_vertices.size()<< " "<< out_vertices.size()*2<< std::endl;
 
-    for(unsigned i=0;i<m_VertexPositions.size();++i)
+    for(unsigned i=0;i<out_vertices.size();++i)
     {
         frame<<1<<" "<<i<<std::endl;
 
     }
 
-    frame<<"CELL_TYPES "<< m_VertexPositions.size()<< std::endl;
-    for(unsigned i=0;i<m_VertexPositions.size();++i)
+    frame<<"CELL_TYPES "<< out_vertices.size()<< std::endl;
+    for(unsigned i=0;i<out_vertices.size();++i)
     {
         frame<<1<<std::endl;
     }
 
-    frame<<"CELL_DATA "<< m_VertexPositions.size()<< std::endl;
+    frame<<"CELL_DATA "<< out_vertices.size()<< std::endl;
     frame<<"SCALARS cell_scalars float 1"<< std::endl;
     frame<<"LOOKUP_TABLE ParticleColors "<< std::endl;
-    for(unsigned i=0;i<m_VertexPositions.size();++i)
+    for(unsigned i=0;i<out_vertices.size();++i)
     {
         frame<< "0.0" <<std::endl;
     }
 
     //Green color
-    frame<<"LOOKUP_TABLE ParticleColors "<< m_VertexPositions.size()<< std::endl;
-    for(unsigned i=0;i<m_VertexPositions.size();++i)
+    frame<<"LOOKUP_TABLE ParticleColors "<< out_vertices.size()<< std::endl;
+    for(unsigned i=0;i<out_vertices.size();++i)
     {
         frame<< "0.0 1.0 0.0 1.0" <<std::endl;
     }
-}*/
+}
