@@ -46,8 +46,6 @@ int main()
     }
 
 
-
-
     /*std::vector<glm::vec3> vertices = {glm::vec3(0.0f, 0.5f, 0.0f),
                                        glm::vec3(0.5f, -0.5f, 0.0f),
                                        glm::vec3(-0.5f, -0.5f, 0.0f)}; //positions*/
@@ -57,39 +55,24 @@ int main()
                                        glm::vec3(0.5f, 0.5f, 0.0f),
                                             glm::vec3(-0.5f, -0.5f, 0.0f),
                                         glm::vec3(-0.5f, 0.5f, 0.0f)};*/
-    OBJFile objConejo;
-    //Ruta actual
-    std::cout<<std::filesystem::current_path().string()<<std::endl;
-    objConejo.readFileOBJ("conejo2.obj");
-    std::vector<glm::vec3>& vertices = objConejo.GetVertices();
+    std::vector<glm::vec3> vertices;
+    std::vector<glm::vec2> uvs;
+    std::vector<glm::vec3> normals;
+
+    OBJFile::loadOBJ("conejo2.obj", vertices, uvs, normals);
+
+    for (unsigned i = 0; i < uvs.size(); i++)
+    {
+        std::cout<< uvs[i].x<< std::endl ;
+    }
+    std::cout<< vertices[1].x<<" // "<< vertices[1].y<<" // "<< vertices[1].z<< std::endl ;
+    
+
     //creacion de la carpeta frame donde se guardaran los frames
     std::filesystem::create_directory("frames") ?
                 std::cout << "Se creo la carpeta frames" << std::endl :
-                    std::cout << "Error al crear la carpeta frames, talvez ya existe" << std::endl;
+                std::cout << "Error al crear la carpeta frames, talvez ya existe" << std::endl;
 
-    //std::cout<<objConejo.GetIndicesVertices()<<std::endl;
-    /*for(unsigned i=0;i<objConejo.GetIndicesVertices().size();++i)
-    {
-        std::cout << objConejo.GetIndicesVertices()[i] << std::endl;
-    }*/
-
-
-
-    /*std::vector<glm::vec3> vertices2;
-    float tam = 10.f;
-    for(auto pt = vertices.begin(); pt != vertices.end(); ++pt)
-    {
-        vertices2.push_back(*pt * tam);
-    }*/
-    /*
-        0.5f, 0.5f, 0.0f,
-        0.5f, -0.5f, 0.0f,
-        -0.5f, -0.5f, 0.0f,
-        0.5f, 0.5f, 0.0f,
-        -0.5f, -0.5f, 0.0f,
-        -0.5f, 0.5f, 0.0f,
-
-    */
 
     GLuint vbo;
     glGenBuffers(1, &vbo);
@@ -169,7 +152,7 @@ int main()
                 vertices[i] = vertices[i] + velocities[i]*time;*/
             }
             time+=h;
-            objConejo.writeFramesInVTK("frames",numFrames);
+            OBJFile::writeFramesInOBJ("frames",numFrames, vertices, uvs, normals);
             numFrames++;
         }
 

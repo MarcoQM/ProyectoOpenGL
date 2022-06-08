@@ -8,10 +8,20 @@ OBJFile::OBJFile()
 {
 
 }
-void OBJFile::readFileOBJ(const std::string& filename) {
+void OBJFile::loadOBJ(const std::string& filename, std::vector<glm::vec3>& out_vertices, 
+                    std::vector<glm::vec2>& out_uvs, 
+                    std::vector<glm::vec3>& out_normals) {
     std::ifstream fileStream{ filename, std::ios_base::in };
-    if (fileStream.is_open())
+
+    std::vector< unsigned int > vertexIndices, uvIndices, normalIndices;
+    std::vector< glm::vec3 > temp_vertices;
+    std::vector< glm::vec2 > temp_uvs;
+    std::vector< glm::vec3 > temp_normals;
+
+    if (!fileStream.is_open())
     {
+        std::cout<<"Error opening obj file"<<std::endl;
+    }
         while (!fileStream.eof())
         {
             std::string line;
@@ -25,14 +35,21 @@ void OBJFile::readFileOBJ(const std::string& filename) {
                 float x,y,z;
                 lineStream >> x >> y >> z;
                 glm::vec3 vertice(x, y, z);
-                m_VertexPositions.emplace_back(vertice);
+                temp_vertices.emplace_back(vertice);
+            }
+            else if (firstSymbol == "vt")
+            {
+                float x,y,z;
+                lineStream >> x >> y;
+                glm::vec2 uv(x, y);
+                temp_uvs.emplace_back(uv);
             }
             else if (firstSymbol == "vn")
             {
                 float x,y,z;
                 lineStream >> x >> y >> z;
                 glm::vec3 normal(x, y, z);
-                m_Normals.emplace_back(normal);
+                temp_normals.emplace_back(normal);
             }
             else if (firstSymbol == "f")
             {
@@ -50,31 +67,52 @@ void OBJFile::readFileOBJ(const std::string& filename) {
                 matches += std::sscanf(c_vertex1, "%d/%d/%d", &vertexIndex[0], &uvIndex[0], &normalIndex[0]);
                 matches += std::sscanf(c_vertex2, "%d/%d/%d", &vertexIndex[1], &uvIndex[1], &normalIndex[1]);
                 matches += std::sscanf(c_vertex3, "%d/%d/%d", &vertexIndex[2], &uvIndex[2], &normalIndex[2]);
-
-                //std::cout<<"AQUI "<<vertexIndex[0]<<" "<<uvIndex[0]<<" "<<normalIndex[0]<<" "<<std::endl;
                 //std::cout<<matches<<std::endl;
 
-                m_IndicesVertex.push_back(vertexIndex[0]);
-                m_IndicesVertex.push_back(vertexIndex[1]);
-                m_IndicesVertex.push_back(vertexIndex[2]);
-                m_IndicesUvs.push_back(uvIndex[0]);
-                m_IndicesUvs.push_back(uvIndex[1]);
-                m_IndicesUvs.push_back(uvIndex[2]);
-                m_IndicesNormals.push_back(normalIndex[0]);
-                m_IndicesNormals.push_back(normalIndex[1]);
-                m_IndicesNormals.push_back(normalIndex[2]);
+                vertexIndices.push_back(vertexIndex[0]);
+                vertexIndices.push_back(vertexIndex[1]);
+                vertexIndices.push_back(vertexIndex[2]);
+                uvIndices    .push_back(uvIndex[0]);
+                uvIndices    .push_back(uvIndex[1]);
+                uvIndices    .push_back(uvIndex[2]);
+                normalIndices.push_back(normalIndex[0]);
+                normalIndices.push_back(normalIndex[1]);
+                normalIndices.push_back(normalIndex[2]);
             }
         }
-
-        for (unsigned int i = 0; i < m_IndicesVertex.size(); ++i)
+        // Para cada vértice de cada triángulo
+        for (unsigned int i = 0; i < vertexIndices.size(); ++i)
         {
-            /* code */
+            unsigned int vertexIndex = vertexIndices[i];
+            glm::vec3 vertex = temp_vertices[vertexIndex-1];
+            out_vertices.push_back(vertex);
         }
-        
-
-    }
+        if(uvIndices[0] != 0)
+        {
+            for (unsigned int i = 0; i < uvIndices.size(); ++i)
+            {
+                unsigned int uvIndex = uvIndices[i];
+                glm::vec2 uv = temp_uvs[uvIndex-1];
+                out_uvs.push_back(uv);
+                //std::cout<<"////"<<uvIndex<<"////"<<std::endl;
+            }
+        }
+        if(normalIndices[0] != 0)
+        {
+            for (unsigned int i = 0; i < normalIndices.size(); ++i)
+            {
+                unsigned int normalIndex = normalIndices[i];
+                glm::vec3 normal = temp_normals[normalIndex-1];
+                out_normals.push_back(normal);
+            }
+        }
 }
-void OBJFile::writeFrames(const std::string& directory, unsigned index)
+
+void OBJFile::writeFramesInOBJ(const std::string& directory, 
+                            unsigned index,
+                            std::vector<glm::vec3>& out_vertices, 
+                            std::vector<glm::vec2>& out_uvs, 
+                            std::vector<glm::vec3>& out_normals)
 {
     std::string fileName  = directory+"/frame_"+std::to_string(index)+".obj";
 
@@ -85,19 +123,19 @@ void OBJFile::writeFrames(const std::string& directory, unsigned index)
         return;
     }
     frame <<"# Generated by Visualization Toolkit"<<std::endl;
-    for(auto it = m_VertexPositions.begin(); it != m_VertexPositions.end(); ++it)
+    for(auto it = out_vertices.begin(); it != out_vertices.end(); ++it)
     {
         frame <<"v "<<std::setprecision(20)<<it->x<<" "<<it->y<<" "<<it->z<<std::endl;
     }
 
-    for(unsigned i = 0; i < m_IndicesVertex.size(); i+=3) {
+    for(unsigned i = 0; i < out_vertices.size(); i+=3) {
 
-        frame<<"f "<<m_IndicesVertex[i]<<" "<<m_IndicesVertex[i+1]<<" "<<m_IndicesVertex[i+2]<<std::endl;
+        frame<<"f "<<i+1<<" "<<i+2<<" "<<i+3<<std::endl;
 
     }
 }
 
-void OBJFile::writeFramesInVTK(const std::string& directory, unsigned index)
+/*void OBJFile::writeFramesInVTK(const std::string& directory, unsigned index)
 {
     std::string fileName  = directory+"/frame_"+std::to_string(index)+".vtk";
 
@@ -150,28 +188,4 @@ void OBJFile::writeFramesInVTK(const std::string& directory, unsigned index)
     {
         frame<< "0.0 1.0 0.0 1.0" <<std::endl;
     }
-}
-
-OBJFile::Vertices& OBJFile::GetVertices() {
-    return m_VertexPositions;
-}
-
-OBJFile::Normals& OBJFile::GetNormals() {
-    return m_Normals;
-}
-
-OBJFile::Uvs& OBJFile::GetUvs() {
-    return m_Uvs;
-}
-
-OBJFile::IndicesVertices& OBJFile::GetIndicesVertices() {
-    return m_IndicesVertex;
-}
-
-OBJFile::IndicesUvs& OBJFile::GetIndicesUvs() {
-    return m_IndicesUvs;
-}
-
-OBJFile::IndicesNormals& OBJFile::GetIndicesNormals() {
-    return m_IndicesNormals;
-}
+}*/
