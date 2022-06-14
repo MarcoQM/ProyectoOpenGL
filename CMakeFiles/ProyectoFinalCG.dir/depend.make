@@ -11,6 +11,8 @@ CMakeFiles/ProyectoFinalCG.dir/OBJFile.cpp.o: OBJFile.h
 CMakeFiles/ProyectoFinalCG.dir/OBJFile2.cpp.o: OBJFile2.cpp
 CMakeFiles/ProyectoFinalCG.dir/OBJFile2.cpp.o: OBJFile2.h
 
+CMakeFiles/ProyectoFinalCG.dir/main.cpp.o: Geometry.h
+CMakeFiles/ProyectoFinalCG.dir/main.cpp.o: OBJFile.h
 CMakeFiles/ProyectoFinalCG.dir/main.cpp.o: main.cpp
 
 CMakeFiles/ProyectoFinalCG.dir/main2.cpp.o: OBJFile.h

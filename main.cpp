@@ -8,6 +8,8 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
+#include "OBJFile.h"
+#include "Geometry.h"
 
 
 int main()
@@ -41,49 +43,30 @@ int main()
 
     }
 
-    std::vector<float> cube =
-    {
-        -1.0f, 1.0f, -1.0f, -1.0f, -1.0f, -1.0f, 1.0f, -1.0f, -1.0f,
-        1.0f, -1.0f, -1.0f, 1.0f, 1.0f, -1.0f, -1.0f, 1.0f, -1.0f,
-        1.0f, -1.0f, -1.0f, 1.0f, -1.0f, 1.0f, 1.0f, 1.0f, -1.0f,
-        1.0f, -1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, -1.0f,
-        1.0f, -1.0f, 1.0f, -1.0f, -1.0f, 1.0f, 1.0f, 1.0f, 1.0f,
-        -1.0f, -1.0f, 1.0f, -1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f,
-        -1.0f, -1.0f, 1.0f, -1.0f, -1.0f, -1.0f, -1.0f, 1.0f, 1.0f,
-        -1.0f, -1.0f, -1.0f, -1.0f, 1.0f, -1.0f, -1.0f, 1.0f, 1.0f,
-        -1.0f, -1.0f, 1.0f, 1.0f, -1.0f, 1.0f, 1.0f, -1.0f, -1.0f,
-        1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, 1.0f,
-        -1.0f, 1.0f, -1.0f, 1.0f, 1.0f, -1.0f, 1.0f, 1.0f, 1.0f,
-        1.0f, 1.0f, 1.0f, -1.0f, 1.0f, 1.0f, -1.0f, 1.0f, -1.0f
-    };
+    //Se realiza la lectura de los archivos obj
+    OBJFile objBunny("conejo1.obj");
+    Geometry geometryBunny(objBunny);
 
+    OBJFile objDragon("dragon1.obj");
+    Geometry geometryDragon(objDragon);
 
-    std::vector<float> pyramid =
-    { -1.0f, -1.0f, 1.0f, 1.0f, -1.0f, 1.0f, 0.0f, 1.0f, 0.0f,
-      1.0f, -1.0f, 1.0f, 1.0f, -1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
-      1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
-      -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, 1.0f, 0.0f, 1.0f, 0.0f,
-      -1.0f, -1.0f, -1.0f, 1.0f, -1.0f, 1.0f, -1.0f, -1.0f, 1.0f,
-      1.0f, -1.0f, 1.0f, -1.0f, -1.0f, -1.0f, 1.0f, -1.0f, -1.0f
-    };
+    std::vector<glm::vec3> bunny{geometryBunny.GetVertices()};
+    std::vector<glm::vec3> dragon{geometryDragon.GetVertices()};
 
-
-
-
-    unsigned cubeNVertices = cube.size();
-    unsigned pyraNVertices = pyramid.size();
-    std::vector<float> velocity(cubeNVertices, 0.f);
+    unsigned bunnyNVertices = bunny.size();
+    unsigned dragonNVertices = dragon.size();
+    std::vector<float> velocity(bunnyNVertices, 0.f);
 
     GLuint vbo[2]; //vertex buffer object para cada objeto
 
     glGenBuffers(1, &vbo[0]);
     glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
-    glBufferData(GL_ARRAY_BUFFER, cubeNVertices*sizeof(float), &cube[0], GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, bunnyNVertices*sizeof(float), &bunny[0], GL_STATIC_DRAW);
 
 
     glGenBuffers(1, &vbo[1]);
     glBindBuffer(GL_ARRAY_BUFFER, vbo[1]);
-    glBufferData(GL_ARRAY_BUFFER, pyraNVertices*sizeof(float), &pyramid[0], GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, dragonNVertices*sizeof(float), &dragon[0], GL_STATIC_DRAW);
 
 
     GLuint vao;
@@ -186,15 +169,21 @@ int main()
 
 
         //aminate here
+        /*for (unsigned int i = 0; i < bunnyNVertices; ++i)
+        {
+            velocity[i] = velocity[i] + (-0.98/1);
+            bunny[i] = bunny[i] + h*velocity[i];
+        }*/
+        
 
-        velocity[1] = velocity[1] + (-0.98/1);
-        cube[1] = cube[1] + h*velocity[1];
+        /*velocity[1] = velocity[1] + (-0.98/1);
+        bunny[1] = bunny[1] + h*velocity[1];
 
         velocity[4] = velocity[4] + (-0.98/1);
-        cube[4] = cube[4] + h*velocity[4];
+        bunny[4] = bunny[4] + h*velocity[4];
 
         velocity[7] = velocity[7] + (-0.98/1);
-        cube[7] = cube[7] + h*velocity[7];
+        bunny[7] = bunny[7] + h*velocity[7];*/
 
         glm::mat4 mOrg = glm::translate(glm::mat4(1.f), glm::vec3(1.0f, -1.0f, 1.0f)); //offset
         glm::mat4 mBack = glm::translate(glm::mat4(1.f), glm::vec3(-1.0f, 1.0f, -1.0f)); //offset
@@ -220,14 +209,14 @@ int main()
         //colision
 
         glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
-        glBufferData(GL_ARRAY_BUFFER, cubeNVertices*sizeof(float), &cube[0], GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, bunnyNVertices*sizeof(float), &bunny[0], GL_STATIC_DRAW);
 
         glEnableVertexAttribArray(0);
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
 
         //glPointSize(10.f);
         //glDrawArrays(GL_POINTS, 0, 3);
-        glDrawArrays(GL_TRIANGLES, 0, 36);
+        glDrawArrays(GL_TRIANGLES, 0, bunnyNVertices);
 
         //draw pyramid
 
@@ -238,10 +227,10 @@ int main()
 
 
         glBindBuffer(GL_ARRAY_BUFFER, vbo[1]);
-        glBufferData(GL_ARRAY_BUFFER, pyraNVertices*sizeof(float), &pyramid[0], GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, dragonNVertices*sizeof(float), &dragon[0], GL_STATIC_DRAW);
 
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
-        glDrawArrays(GL_TRIANGLES, 0, 18);
+        glDrawArrays(GL_TRIANGLES, 0, dragonNVertices);
 
 
 
@@ -254,6 +243,6 @@ int main()
     glfwTerminate();
 
 
-    std::cout << "Hello World!" << std::endl;
+    std::cout << "Finished!" << std::endl;
     return 0;
 }
