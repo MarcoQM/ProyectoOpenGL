@@ -4,8 +4,11 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
+  "/home/marco/ProyectosQt/ProyectoFinalCG/Geometry.cpp" "/home/marco/ProyectosQt/ProyectoFinalCG/CMakeFiles/ProyectoFinalCG.dir/Geometry.cpp.o"
   "/home/marco/ProyectosQt/ProyectoFinalCG/OBJFile.cpp" "/home/marco/ProyectosQt/ProyectoFinalCG/CMakeFiles/ProyectoFinalCG.dir/OBJFile.cpp.o"
+  "/home/marco/ProyectosQt/ProyectoFinalCG/OBJFile2.cpp" "/home/marco/ProyectosQt/ProyectoFinalCG/CMakeFiles/ProyectoFinalCG.dir/OBJFile2.cpp.o"
   "/home/marco/ProyectosQt/ProyectoFinalCG/main.cpp" "/home/marco/ProyectosQt/ProyectoFinalCG/CMakeFiles/ProyectoFinalCG.dir/main.cpp.o"
+  "/home/marco/ProyectosQt/ProyectoFinalCG/main2.cpp" "/home/marco/ProyectosQt/ProyectoFinalCG/CMakeFiles/ProyectoFinalCG.dir/main2.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 

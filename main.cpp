@@ -1,174 +1,259 @@
 #include <iostream>
-#include <filesystem>
 #include <vector>
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
-#include <glm/gtc/matrix_transform.hpp>
+
 #include <glm/glm.hpp>
-#include "OBJFile.h"
+#include <glm/gtc/type_ptr.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 
-//Marco Antonio Quiña Mamani
-//ejecucion
-// cmake
-// make
-// ./nombreDelEjecutable
-
-glm::vec3 functionF(glm::vec3 x, float t);
 
 int main()
 {
 
-    if(glfwInit() == 0)
+    GLFWwindow* window;
+
+    if(glfwInit()==0) //si todo esta ok con el SO
     {
         std::cerr<<"GLFW failed\n";
         return -1;
     }
 
-    GLFWwindow* window;
-    window = glfwCreateWindow(1000, 800, "Hello OpenGL", nullptr, nullptr);
+    //dar memoria
+    window = glfwCreateWindow(500, 500, "Hello triangle", nullptr, nullptr);
 
-    if(window == nullptr)
+    if(window==nullptr)
     {
         std::cerr<<"GLFW failed\n";
+        glfwTerminate();
         return -1;
     }
     glfwMakeContextCurrent(window);
-// Quiña Mamani Marco Antonio
+
 
     if(glewInit() != GLEW_OK)
     {
         std::cerr<<"GLEW failed\n";
-        glfwTerminate();
+        glfwTerminate(); //delete
         return -1;
 
     }
 
-
-    std::vector<glm::vec3> vertices;
-    std::vector<glm::vec2> uvs;
-    std::vector<glm::vec3> normals;
-
-    OBJFile::loadOBJ("conejo1.obj", vertices, uvs, normals);
-
-    for (unsigned i = 0; i < uvs.size(); i++)
+    std::vector<float> cube =
     {
-        std::cout<< uvs[i].x<< std::endl ;
-    }
-    std::cout<< vertices[1].x<<" // "<< vertices[1].y<<" // "<< vertices[1].z<< std::endl ;
-    
-
-    //creacion de la carpeta frame donde se guardaran los frames
-    std::filesystem::create_directory("frames") ?
-                std::cout << "Se creo la carpeta frames" << std::endl :
-                std::cout << "Error al crear la carpeta frames, talvez ya existe" << std::endl;
-
-
-    GLuint vbo;
-    glGenBuffers(1, &vbo);
-    glBindBuffer(GL_ARRAY_BUFFER, vbo);
-
-    glBufferData(GL_ARRAY_BUFFER, vertices.size() *3 * sizeof(float)  , &vertices[0], GL_STATIC_DRAW);
-
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0,3, GL_FLOAT, GL_FALSE, 0, nullptr);
+        -1.0f, 1.0f, -1.0f, -1.0f, -1.0f, -1.0f, 1.0f, -1.0f, -1.0f,
+        1.0f, -1.0f, -1.0f, 1.0f, 1.0f, -1.0f, -1.0f, 1.0f, -1.0f,
+        1.0f, -1.0f, -1.0f, 1.0f, -1.0f, 1.0f, 1.0f, 1.0f, -1.0f,
+        1.0f, -1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, -1.0f,
+        1.0f, -1.0f, 1.0f, -1.0f, -1.0f, 1.0f, 1.0f, 1.0f, 1.0f,
+        -1.0f, -1.0f, 1.0f, -1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f,
+        -1.0f, -1.0f, 1.0f, -1.0f, -1.0f, -1.0f, -1.0f, 1.0f, 1.0f,
+        -1.0f, -1.0f, -1.0f, -1.0f, 1.0f, -1.0f, -1.0f, 1.0f, 1.0f,
+        -1.0f, -1.0f, 1.0f, 1.0f, -1.0f, 1.0f, 1.0f, -1.0f, -1.0f,
+        1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, 1.0f,
+        -1.0f, 1.0f, -1.0f, 1.0f, 1.0f, -1.0f, 1.0f, 1.0f, 1.0f,
+        1.0f, 1.0f, 1.0f, -1.0f, 1.0f, 1.0f, -1.0f, 1.0f, -1.0f
+    };
 
 
+    std::vector<float> pyramid =
+    { -1.0f, -1.0f, 1.0f, 1.0f, -1.0f, 1.0f, 0.0f, 1.0f, 0.0f,
+      1.0f, -1.0f, 1.0f, 1.0f, -1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
+      1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
+      -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, 1.0f, 0.0f, 1.0f, 0.0f,
+      -1.0f, -1.0f, -1.0f, 1.0f, -1.0f, 1.0f, -1.0f, -1.0f, 1.0f,
+      1.0f, -1.0f, 1.0f, -1.0f, -1.0f, -1.0f, 1.0f, -1.0f, -1.0f
+    };
 
-    const char* vertexShaderSrc =
+
+
+
+    unsigned cubeNVertices = cube.size();
+    unsigned pyraNVertices = pyramid.size();
+    std::vector<float> velocity(cubeNVertices, 0.f);
+
+    GLuint vbo[2]; //vertex buffer object para cada objeto
+
+    glGenBuffers(1, &vbo[0]);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
+    glBufferData(GL_ARRAY_BUFFER, cubeNVertices*sizeof(float), &cube[0], GL_STATIC_DRAW);
+
+
+    glGenBuffers(1, &vbo[1]);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo[1]);
+    glBufferData(GL_ARRAY_BUFFER, pyraNVertices*sizeof(float), &pyramid[0], GL_STATIC_DRAW);
+
+
+    GLuint vao;
+    glGenVertexArrays(1, &vao);
+    glBindVertexArray(vao);
+
+
+
+    const char * verter_shader =
             "#version 400\n"
-            "in vec4 position;"
-            "void main()"
-            "{"
-            "gl_Position = position;"
+            "in vec3 vp;"
+            "uniform mat4 mvMatrix;" // model-view
+            "uniform mat4 projMatrix;" //projection
+            "void main(){"
+            "gl_Position = projMatrix * mvMatrix * vec4(vp, 1.0);"
             "}";
 
-    const char* fragmentShaderSrc =
+
+
+
+    const char * fragment_shader =
             "#version 400\n"
-            "out vec4 color;"
-            "void main()"
-            "{"
-            "color = vec4(0.0, 0.5, 0.0, 1.0);"
+            "out vec4 frag_color;"
+            "uniform mat4 mvMatrix;" // model-view
+            "uniform mat4 projMatrix;" //projection
+            "void main(){"
+            "frag_color = vec4(0.5, 0.5, 0.0, 0.5);"
             "}";
 
 
-    GLuint vertexShader  = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vertexShader, 1, &vertexShaderSrc, nullptr);
-    glCompileShader(vertexShader);
+    GLuint vs  = glCreateShader(GL_VERTEX_SHADER);
+    glShaderSource(vs, 1, &verter_shader, nullptr);
+    glCompileShader(vs);
 
-    GLuint fragmentShader  = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fragmentShader, 1, &fragmentShaderSrc, nullptr);
-    glCompileShader(fragmentShader);
-
+    GLuint fs = glCreateShader(GL_FRAGMENT_SHADER);
+    glShaderSource(fs, 1, &fragment_shader, nullptr);
+    glCompileShader(fs);
 
     GLuint shaderProgram = glCreateProgram();
-
-    glAttachShader(shaderProgram, vertexShader);
-    glAttachShader(shaderProgram, fragmentShader);
-
-
+    glAttachShader(shaderProgram, fs);
+    glAttachShader(shaderProgram, vs);
     glLinkProgram(shaderProgram);
     glUseProgram(shaderProgram);
 
 
-    std::vector<glm::vec3> velocities(vertices.size(), glm::vec3(0,0,0));
 
-    std::vector<float> mass(vertices.size(), 1);
+    //all objects
+    float cameraX = 0.f;
+    float cameraY = 0.f;
+    float cameraZ = 7.f;
 
-    //glm::vec3 gravity(0, -0.98, 0);
 
-    float h = 0.0002;
-    float time=0;
-    unsigned numFrames = 1;
-    unsigned limFrames = 400;
-    glm::vec3 k1, k2;
+    //cube
+    float lockX = 0.0;
+    float lockY = -2.0;
+    float lockZ = 0.0; //offset
 
-    while(!glfwWindowShouldClose(window))
+
+    //pyramid
+    float pyLockX = -2.0;
+    float pyLockY = 2.0;
+    float pyLockZ = 0.0;
+
+
+
+    float h = 0.00001;
+
+    int width, height;
+    glm::mat4 mMat, vMat, mvMat, pMat;
+
+    float angle=0;
+    while (glfwWindowShouldClose(window)==0) //animation
     {
 
-        glClearColor(0.0, 0.0, 0.2, 1.0);
+        //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
         glClear(GL_COLOR_BUFFER_BIT);
+        glClearColor(0.2, 0.2, 0.5, 0.5); //RGB/255
 
-        if(numFrames <= limFrames)
-        {
-            for(unsigned i = 0; i < vertices.size(); ++i)
-            {
-                k1 = h *functionF(velocities[i], time);
-                k2 = h *functionF(velocities[i] + k1/2.f, time + h/2.f);
-                velocities[i]  = velocities[i] + k2;
-                vertices[i] = vertices[i] + velocities[i]*time;
-
-                /*velocities[i]  = velocities[i] + h*(gravity/mass[i]);
-                vertices[i] = vertices[i] + velocities[i]*time;*/
-            }
-            time+=h;
-            OBJFile::writeFramesInOBJ("frames",numFrames, vertices, uvs, normals);
-            numFrames++;
-        }
+        //get matrix locations
+        GLuint mvLoc    = glGetUniformLocation(shaderProgram, "mvMatrix");
+        GLuint projLoc  = glGetUniformLocation(shaderProgram, "projMatrix");
 
 
-        glBufferData(GL_ARRAY_BUFFER, vertices.size() *3 * sizeof(float)  , &vertices[0], GL_STATIC_DRAW);
+        //perstective
+        glfwGetFramebufferSize(window, &width, &height);
+        float aspect = static_cast<float>(width)/static_cast<float>(height);
+        pMat =  glm::perspective(1.0472f, aspect, 0.1f, 1000.0f);
+
+
+
+        //matrix model - view
+        vMat = glm::translate(glm::mat4(1.f), glm::vec3(-cameraX, -cameraY, -cameraZ));
+
+
+        glm::mat4 vRot  = glm::rotate(glm::mat4(1.f) , angle , glm::vec3(0, -1,0));
+
+        vMat =  vMat*vRot;
+
+
+
+
+        //aminate here
+
+        velocity[1] = velocity[1] + (-0.98/1);
+        cube[1] = cube[1] + h*velocity[1];
+
+        velocity[4] = velocity[4] + (-0.98/1);
+        cube[4] = cube[4] + h*velocity[4];
+
+        velocity[7] = velocity[7] + (-0.98/1);
+        cube[7] = cube[7] + h*velocity[7];
+
+        glm::mat4 mOrg = glm::translate(glm::mat4(1.f), glm::vec3(1.0f, -1.0f, 1.0f)); //offset
+        glm::mat4 mBack = glm::translate(glm::mat4(1.f), glm::vec3(-1.0f, 1.0f, -1.0f)); //offset
+
+        glm::mat4 mRot  = mBack*glm::rotate(mOrg, angle , glm::vec3(1  , 0, 0 ));
+
+
+        angle+=0.05;
+        if(angle>360) angle=0;
+
+        mMat = glm::translate(glm::mat4(1.f), glm::vec3(lockX, lockY, lockZ))*mRot; //offset
+
+        mvMat = vMat * mMat;
+
+
+        glUniformMatrix4fv(mvLoc, 1, GL_FALSE,  glm::value_ptr(mvMat));
+        glUniformMatrix4fv(projLoc, 1, GL_FALSE,  glm::value_ptr(pMat));
+
+
+
+
+
+        //colision
+
+        glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
+        glBufferData(GL_ARRAY_BUFFER, cubeNVertices*sizeof(float), &cube[0], GL_STATIC_DRAW);
 
         glEnableVertexAttribArray(0);
-        glVertexAttribPointer(0,3, GL_FLOAT, GL_FALSE, 0, nullptr);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
+
+        //glPointSize(10.f);
+        //glDrawArrays(GL_POINTS, 0, 3);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+
+        //draw pyramid
+
+        mMat = glm::translate(glm::mat4(1.f), glm::vec3(pyLockX, pyLockY, pyLockZ)); //offset
+        mvMat = vMat * mMat;
+
+        glUniformMatrix4fv(mvLoc, 1, GL_FALSE,  glm::value_ptr(mvMat));
+
+
+        glBindBuffer(GL_ARRAY_BUFFER, vbo[1]);
+        glBufferData(GL_ARRAY_BUFFER, pyraNVertices*sizeof(float), &pyramid[0], GL_STATIC_DRAW);
+
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
+        glDrawArrays(GL_TRIANGLES, 0, 18);
 
 
 
-        glDrawArrays(GL_POINTS, 0, vertices.size());
-        glfwSwapBuffers(window);
+        glfwSwapBuffers(window); //Buffers->OpenGL
 
-        glfwPollEvents();
+        glfwPollEvents(); //User
 
     }
 
-
     glfwTerminate();
 
-    return 0;
-}
 
-glm::vec3 functionF(glm::vec3 x, float t) {
-    glm::vec3 gravity(0, -0.98, 0);
-    return gravity;
+    std::cout << "Hello World!" << std::endl;
+    return 0;
 }

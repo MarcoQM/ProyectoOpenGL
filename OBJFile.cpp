@@ -1,194 +1,90 @@
 #include "OBJFile.h"
 
-
-//Marco Antonio Quiña Mamani
-
-
-OBJFile::OBJFile()
+OBJFile::OBJFile(const std::string &filename)
 {
+    std::ifstream fileStream{filename, std::ios_base::in};
 
-}
-void OBJFile::loadOBJ(const std::string& filename, std::vector<glm::vec3>& out_vertices, 
-                    std::vector<glm::vec2>& out_uvs, 
-                    std::vector<glm::vec3>& out_normals) {
-    std::ifstream fileStream{ filename, std::ios_base::in };
-
-    std::vector< unsigned int > vertexIndices, uvIndices, normalIndices;
-    std::vector< glm::vec3 > temp_vertices;
-    std::vector< glm::vec2 > temp_uvs;
-    std::vector< glm::vec3 > temp_normals;
-
-    if (!fileStream.is_open())
+    if (fileStream.is_open())
     {
-        std::cout<<"Error opening obj file"<<std::endl;
-    }
         while (!fileStream.eof())
         {
             std::string line;
             getline(fileStream, line);
-            std::stringstream lineStream{ line };
-
+            std::stringstream lineStream{line};
             std::string firstSymbol;
             lineStream >> firstSymbol;
             if (firstSymbol == "v")
             {
-                float x,y,z;
+                float vertexPosition{};
+                float x, y, z;
                 lineStream >> x >> y >> z;
                 glm::vec3 vertice(x, y, z);
-                temp_vertices.emplace_back(vertice);
+                m_Vertex.emplace_back(vertice);
+                
+                /*for (unsigned int i = 0; i < 3; ++i)
+                {
+
+                    lineStream >> vertexPosition;
+                    m_VertexPositions.emplace_back(vertexPosition);
+                }*/
             }
             else if (firstSymbol == "vt")
             {
-                float x,y,z;
-                lineStream >> x >> y;
-                glm::vec2 uv(x, y);
-                temp_uvs.emplace_back(uv);
+                float textureCoordinate{};
+                for (unsigned int i = 0; i < 2; ++i)
+                {
+                    lineStream >> textureCoordinate;
+                    m_TextureCoordinates.emplace_back(textureCoordinate);
+                }
             }
             else if (firstSymbol == "vn")
             {
-                float x,y,z;
-                lineStream >> x >> y >> z;
-                glm::vec3 normal(x, y, z);
-                temp_normals.emplace_back(normal);
+                float normal{};
+                for (unsigned int i = 0; i < 3; ++i)
+                {
+                    lineStream >> normal;
+                    m_Normals.emplace_back(normal);
+                }
             }
             else if (firstSymbol == "f")
             {
-                std::string vertex1, vertex2, vertex3;
-                unsigned int vertexIndex[3] = {0,0,0};
-                unsigned int uvIndex[3]     = {0,0,0};
-                unsigned int normalIndex[3] = {0,0,0};
+                char separator;
+                unsigned short index{};
+                for (unsigned int i = 0; i < 3; ++i)
+                {
+                    // for (unsigned int j = 0; j < 3; ++j)
+                    //{
+                    lineStream >> index;
 
-                lineStream >> vertex1 >> vertex2 >> vertex3;
-                auto c_vertex1 = vertex1.c_str();
-                auto c_vertex2 = vertex2.c_str();
-                auto c_vertex3 = vertex3.c_str();
-
-                int  matches = 0;
-                matches += std::sscanf(c_vertex1, "%d/%d/%d", &vertexIndex[0], &uvIndex[0], &normalIndex[0]);
-                matches += std::sscanf(c_vertex2, "%d/%d/%d", &vertexIndex[1], &uvIndex[1], &normalIndex[1]);
-                matches += std::sscanf(c_vertex3, "%d/%d/%d", &vertexIndex[2], &uvIndex[2], &normalIndex[2]);
-                //std::cout<<matches<<std::endl;
-
-                vertexIndices.push_back(vertexIndex[0]);
-                vertexIndices.push_back(vertexIndex[1]);
-                vertexIndices.push_back(vertexIndex[2]);
-                uvIndices    .push_back(uvIndex[0]);
-                uvIndices    .push_back(uvIndex[1]);
-                uvIndices    .push_back(uvIndex[2]);
-                normalIndices.push_back(normalIndex[0]);
-                normalIndices.push_back(normalIndex[1]);
-                normalIndices.push_back(normalIndex[2]);
+                    m_Indices.emplace_back(index);
+                    //if (j < 2)
+                    //{
+                    //    lineStream >> separator;
+                    //}
+                    //}
+                }
             }
         }
-        // Para cada vértice de cada triángulo
-        for (unsigned int i = 0; i < vertexIndices.size(); ++i)
-        {
-            unsigned int vertexIndex = vertexIndices[i];
-            glm::vec3 vertex = temp_vertices[vertexIndex-1];
-            out_vertices.push_back(vertex);
-        }
-        if(uvIndices[0] != 0)
-        {
-            for (unsigned int i = 0; i < uvIndices.size(); ++i)
-            {
-                unsigned int uvIndex = uvIndices[i];
-                glm::vec2 uv = temp_uvs[uvIndex-1];
-                out_uvs.push_back(uv);
-                //std::cout<<"////"<<uvIndex<<"////"<<std::endl;
-            }
-        }
-        if(normalIndices[0] != 0)
-        {
-            for (unsigned int i = 0; i < normalIndices.size(); ++i)
-            {
-                unsigned int normalIndex = normalIndices[i];
-                glm::vec3 normal = temp_normals[normalIndex-1];
-                out_normals.push_back(normal);
-            }
-        }
-}
-
-void OBJFile::writeFramesInOBJ(const std::string& directory, 
-                            unsigned index,
-                            std::vector<glm::vec3>& out_vertices, 
-                            std::vector<glm::vec2>& out_uvs, 
-                            std::vector<glm::vec3>& out_normals)
-{
-    std::string fileName  = directory+"/frame_"+std::to_string(index)+".obj";
-
-    std::ofstream frame(fileName);
-    if (!frame.is_open())
-    {
-        std::cerr<<"Error opening "<<fileName <<std::endl;
-        return;
-    }
-    frame <<"# Generated by Visualization Toolkit"<<std::endl;
-    for(auto it = out_vertices.begin(); it != out_vertices.end(); ++it)
-    {
-        frame <<"v "<<std::setprecision(20)<<it->x<<" "<<it->y<<" "<<it->z<<std::endl;
-    }
-
-    for(unsigned i = 0; i < out_vertices.size(); i+=3) {
-
-        frame<<"f "<<i+1<<" "<<i+2<<" "<<i+3<<std::endl;
-
     }
 }
 
-void OBJFile::writeFramesInVTK(const std::string& directory, unsigned index,
-                            std::vector<glm::vec3>& out_vertices, 
-                            std::vector<glm::vec2>& out_uvs, 
-                            std::vector<glm::vec3>& out_normals)
+const OBJFile::Vertices &OBJFile::GetVertices() const
 {
-    std::string fileName  = directory+"/frame_"+std::to_string(index)+".vtk";
+    //return m_VertexPositions;
+    return m_Vertex;
+}
 
-    std::ofstream frame (fileName);
+const OBJFile::TextureCoordinates &OBJFile::GetTextureCoordinates() const
+{
+    return m_TextureCoordinates;
+}
 
-    if (!frame.is_open())
-    {
-        std::cerr<<"Error opening "<<fileName <<std::endl;
-        return;
-    }
+const OBJFile::Normals &OBJFile::GetNormals() const
+{
+    return m_Normals;
+}
 
-    //headers
-    frame <<"# vtk DataFile Version 2.0"<<std::endl;
-    frame<<"Particle system"<<std::endl;
-    frame<<"ASCII"<<std::endl;
-    frame<<"DATASET UNSTRUCTURED_GRID"<<std::endl;
-    frame<<"POINTS "<< out_vertices.size()<< " float"<< std::endl;
-
-    for(auto it = out_vertices.begin(); it != out_vertices.end(); ++it)
-    {
-
-        frame <<it->x<<" "<<it->y<<" "<<it->z<<std::endl;
-    }
-
-    frame<<"CELLS "<< out_vertices.size()<< " "<< out_vertices.size()*2<< std::endl;
-
-    for(unsigned i=0;i<out_vertices.size();++i)
-    {
-        frame<<1<<" "<<i<<std::endl;
-
-    }
-
-    frame<<"CELL_TYPES "<< out_vertices.size()<< std::endl;
-    for(unsigned i=0;i<out_vertices.size();++i)
-    {
-        frame<<1<<std::endl;
-    }
-
-    frame<<"CELL_DATA "<< out_vertices.size()<< std::endl;
-    frame<<"SCALARS cell_scalars float 1"<< std::endl;
-    frame<<"LOOKUP_TABLE ParticleColors "<< std::endl;
-    for(unsigned i=0;i<out_vertices.size();++i)
-    {
-        frame<< "0.0" <<std::endl;
-    }
-
-    //Green color
-    frame<<"LOOKUP_TABLE ParticleColors "<< out_vertices.size()<< std::endl;
-    for(unsigned i=0;i<out_vertices.size();++i)
-    {
-        frame<< "0.0 1.0 0.0 1.0" <<std::endl;
-    }
+const OBJFile::Indices &OBJFile::GetIndices() const
+{
+    return m_Indices;
 }
