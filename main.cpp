@@ -58,7 +58,14 @@ int main()
 
     unsigned bunnyNVertices = bunny.size();
     unsigned dragonNVertices = dragon.size();
-    std::vector<float> velocity(bunnyNVertices, 0.f);
+
+    // Vector de velocidad
+    std::vector<float> velocityBunny(bunnyNVertices, 0.f);
+    std::vector<float> velocityDragon(dragonNVertices, 0.f);
+
+
+
+
 
     GLuint vbo[2]; //vertex buffer object para cada objeto
 
@@ -172,10 +179,18 @@ int main()
 
 
         //aminate here
+        //std::cout<<bunnyNVertices<<std::endl;
+        //std::cout<<bunny.size()<<std::endl;
         /*for (unsigned int i = 0; i < bunnyNVertices; ++i)
         {
-            velocity[i] = velocity[i] + (-0.98/1);
-            bunny[i] = bunny[i] + h*velocity[i];
+            velocityBunny[i] = velocityBunny[i] + (-0.98/1);
+            bunny[i] = bunny[i] + h*velocityBunny[i];
+        }*/
+
+        /*for (unsigned int i = 0; i < dragonNVertices; ++i)
+        {
+            velocityDragon[i] = velocityDragon[i] + (-0.98/1);
+            dragon[i] = dragon[i] + h*velocityDragon[i];
         }*/
         
 
