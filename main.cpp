@@ -24,7 +24,7 @@ int main()
     }
 
     //dar memoria
-    window = glfwCreateWindow(500, 500, "Hello triangle", nullptr, nullptr);
+    window = glfwCreateWindow(1000, 1000, "Hello triangle", nullptr, nullptr);
 
     if(window==nullptr)
     {
@@ -53,6 +53,9 @@ int main()
     std::vector<glm::vec3> bunny{geometryBunny.GetVertices()};
     std::vector<glm::vec3> dragon{geometryDragon.GetVertices()};
 
+    std::cout<<bunny.size()<<std::endl;
+    std::cout<<geometryBunny.GetIndices().size()<<std::endl;
+
     unsigned bunnyNVertices = bunny.size();
     unsigned dragonNVertices = dragon.size();
     std::vector<float> velocity(bunnyNVertices, 0.f);
@@ -61,12 +64,12 @@ int main()
 
     glGenBuffers(1, &vbo[0]);
     glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
-    glBufferData(GL_ARRAY_BUFFER, bunnyNVertices*sizeof(float), &bunny[0], GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, bunnyNVertices*3*sizeof(float), &bunny[0], GL_STATIC_DRAW);
 
 
     glGenBuffers(1, &vbo[1]);
     glBindBuffer(GL_ARRAY_BUFFER, vbo[1]);
-    glBufferData(GL_ARRAY_BUFFER, dragonNVertices*sizeof(float), &dragon[0], GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, dragonNVertices*3*sizeof(float), &dragon[0], GL_STATIC_DRAW);
 
 
     GLuint vao;
@@ -119,15 +122,15 @@ int main()
     float cameraZ = 7.f;
 
 
-    //cube
+    //bunny
     float lockX = 0.0;
     float lockY = -2.0;
     float lockZ = 0.0; //offset
 
 
-    //pyramid
+    //dragon
     float pyLockX = -2.0;
-    float pyLockY = 2.0;
+    float pyLockY = 0.0;
     float pyLockZ = 0.0;
 
 
@@ -135,13 +138,13 @@ int main()
     float h = 0.00001;
 
     int width, height;
-    glm::mat4 mMat, vMat, mvMat, pMat;
+    glm::mat4 mMat, vMat, mvMat, pMat, sMat;
 
     float angle=0;
     while (glfwWindowShouldClose(window)==0) //animation
     {
 
-        //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
         glClear(GL_COLOR_BUFFER_BIT);
         glClearColor(0.2, 0.2, 0.5, 0.5); //RGB/255
 
@@ -195,8 +198,10 @@ int main()
         if(angle>360) angle=0;
 
         mMat = glm::translate(glm::mat4(1.f), glm::vec3(lockX, lockY, lockZ))*mRot; //offset
+        sMat = glm::scale(glm::mat4(1.f), glm::vec3(15.f, 15.f, 15.f));
 
-        mvMat = vMat * mMat;
+        mvMat = vMat * mMat * sMat;
+        //mvMat = vMat*sMat;
 
 
         glUniformMatrix4fv(mvLoc, 1, GL_FALSE,  glm::value_ptr(mvMat));
@@ -209,7 +214,7 @@ int main()
         //colision
 
         glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
-        glBufferData(GL_ARRAY_BUFFER, bunnyNVertices*sizeof(float), &bunny[0], GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, bunnyNVertices*3*sizeof(float), &bunny[0], GL_STATIC_DRAW);
 
         glEnableVertexAttribArray(0);
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
@@ -221,13 +226,15 @@ int main()
         //draw pyramid
 
         mMat = glm::translate(glm::mat4(1.f), glm::vec3(pyLockX, pyLockY, pyLockZ)); //offset
-        mvMat = vMat * mMat;
+        sMat = glm::scale(glm::mat4(1.f), glm::vec3(10.f, 10.f, 10.f));
+
+        mvMat = vMat * mMat * sMat;
 
         glUniformMatrix4fv(mvLoc, 1, GL_FALSE,  glm::value_ptr(mvMat));
 
 
         glBindBuffer(GL_ARRAY_BUFFER, vbo[1]);
-        glBufferData(GL_ARRAY_BUFFER, dragonNVertices*sizeof(float), &dragon[0], GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, dragonNVertices*3*sizeof(float), &dragon[0], GL_STATIC_DRAW);
 
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
         glDrawArrays(GL_TRIANGLES, 0, dragonNVertices);
