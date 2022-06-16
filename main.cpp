@@ -12,6 +12,7 @@
 #include "Geometry.h"
 #include "Topology.h"
 
+glm::vec3 functionF(glm::vec3 x, float t);
 
 int main()
 {
@@ -71,11 +72,8 @@ int main()
     unsigned dragonNVertices = dragon.size();
 
     // Vector de velocidad
-    std::vector<float> velocityBunny(bunnyNVertices, 0.f);
-    std::vector<float> velocityDragon(dragonNVertices, 0.f);
-
-
-
+    std::vector<glm::vec3> velocityBunny(bunnyNVertices, glm::vec3(0,0,0));
+    std::vector<glm::vec3> velocityDragon(dragonNVertices, glm::vec3(0,0,0));
 
 
     GLuint vbo[2]; //vertex buffer object para cada objeto
@@ -154,6 +152,8 @@ int main()
 
 
     float h = 0.00001;
+    float time=0;
+    glm::vec3 k1, k2;
 
     int width, height;
     glm::mat4 mMat, vMat, mvMat, pMat, sMat;
@@ -194,13 +194,15 @@ int main()
         //std::cout<<bunny.size()<<std::endl;
         for (unsigned int i = 0; i < bunnyNVertices; ++i)
         {
-            velocityBunny[i] = velocityBunny[i] + (-0.98/1);
+            velocityBunny[i] = velocityBunny[i] + (-0.98f/1.f);
             bunny[i] = bunny[i] + h*velocityBunny[i];
+
+            
         }
 
         for (unsigned int i = 0; i < dragonNVertices; ++i)
         {
-            velocityDragon[i] = velocityDragon[i] + (-0.98/1);
+            velocityDragon[i] = velocityDragon[i] + (-0.98f/1.f);
             dragon[i] = dragon[i] + h*velocityDragon[i];
         }
         
@@ -281,4 +283,9 @@ int main()
 
     std::cout << "Finished!" << std::endl;
     return 0;
+}
+
+glm::vec3 functionF(glm::vec3 x, float t) {
+    glm::vec3 gravity(0, -0.98, 0);
+    return gravity;
 }
