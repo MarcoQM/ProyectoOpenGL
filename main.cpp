@@ -188,6 +188,7 @@ int main()
             verticesBunny[i] = verticesBunny[i] + velocityBunny[i] * timeBunny;
         }
         timeBunny+=h;
+        updatePrimitives(verticesBunny, indicesBunny, bunny);
 
         for (unsigned int i = 0; i < verticesDragon.size(); ++i)
         {
@@ -200,8 +201,6 @@ int main()
             verticesDragon[i] = verticesDragon[i] + velocityDragon[i] * timeDragon;
         }
         timeDragon+=h;
-
-        updatePrimitives(verticesBunny, indicesBunny, bunny);
         updatePrimitives(verticesDragon, indicesDragon, dragon);
 
 
