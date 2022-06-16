@@ -10,6 +10,7 @@
 
 #include "OBJFile.h"
 #include "Geometry.h"
+#include "Topology.h"
 
 
 int main()
@@ -44,8 +45,18 @@ int main()
     }
 
     //Se realiza la lectura de los archivos obj
-    OBJFile objBunny("conejo1.obj");
+    OBJFile objBunny("conejo2.obj");
     Geometry geometryBunny(objBunny);
+    Topology topologyBunny(geometryBunny.GetIndices());
+
+    for(unsigned  i = 0; i < topologyBunny.GetEdges().size(); ++i)
+    {
+        std::cout<<topologyBunny.GetEdges()[i]<<std::endl;
+    }
+    std::cout<<"tamanio topologia "<<topologyBunny.GetEdges().size()<<std::endl;
+
+
+
 
     OBJFile objDragon("dragon1.obj");
     Geometry geometryDragon(objDragon);
@@ -103,7 +114,7 @@ int main()
             "uniform mat4 mvMatrix;" // model-view
             "uniform mat4 projMatrix;" //projection
             "void main(){"
-            "frag_color = vec4(0.5, 0.5, 0.0, 0.5);"
+            "frag_color = vec4(1.0, 1.0, 1.0, 0.0);"
             "}";
 
 
@@ -130,14 +141,14 @@ int main()
 
 
     //bunny
-    float lockX = 0.0;
-    float lockY = -2.0;
+    float lockX = 2.0;
+    float lockY = -1.5;
     float lockZ = 0.0; //offset
 
 
     //dragon
     float pyLockX = -2.0;
-    float pyLockY = 0.0;
+    float pyLockY = -2.0;
     float pyLockZ = 0.0;
 
 
@@ -153,7 +164,7 @@ int main()
 
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
         glClear(GL_COLOR_BUFFER_BIT);
-        glClearColor(0.2, 0.2, 0.5, 0.5); //RGB/255
+        glClearColor(0.1, 0.1, 0.1, 0.0); //RGB/255
 
         //get matrix locations
         GLuint mvLoc    = glGetUniformLocation(shaderProgram, "mvMatrix");
@@ -171,9 +182,9 @@ int main()
         vMat = glm::translate(glm::mat4(1.f), glm::vec3(-cameraX, -cameraY, -cameraZ));
 
 
-        glm::mat4 vRot  = glm::rotate(glm::mat4(1.f) , angle , glm::vec3(0, -1,0));
-
-        vMat =  vMat*vRot;
+        glm::mat4 vRot  = glm::rotate(glm::mat4(1.f) , angle , glm::vec3(0, 1,0));
+        //Giro de Camara
+        //vMat =  vMat*vRot;
 
 
 
@@ -181,17 +192,17 @@ int main()
         //aminate here
         //std::cout<<bunnyNVertices<<std::endl;
         //std::cout<<bunny.size()<<std::endl;
-        /*for (unsigned int i = 0; i < bunnyNVertices; ++i)
+        for (unsigned int i = 0; i < bunnyNVertices; ++i)
         {
             velocityBunny[i] = velocityBunny[i] + (-0.98/1);
             bunny[i] = bunny[i] + h*velocityBunny[i];
-        }*/
+        }
 
-        /*for (unsigned int i = 0; i < dragonNVertices; ++i)
+        for (unsigned int i = 0; i < dragonNVertices; ++i)
         {
             velocityDragon[i] = velocityDragon[i] + (-0.98/1);
             dragon[i] = dragon[i] + h*velocityDragon[i];
-        }*/
+        }
         
 
         /*velocity[1] = velocity[1] + (-0.98/1);
@@ -206,15 +217,17 @@ int main()
         glm::mat4 mOrg = glm::translate(glm::mat4(1.f), glm::vec3(1.0f, -1.0f, 1.0f)); //offset
         glm::mat4 mBack = glm::translate(glm::mat4(1.f), glm::vec3(-1.0f, 1.0f, -1.0f)); //offset
 
-        glm::mat4 mRot  = mBack*glm::rotate(mOrg, angle , glm::vec3(1  , 0, 0 ));
+        glm::mat4 mRot  = mBack*glm::rotate(mOrg, angle , glm::vec3(0 , 1, 0 ));
 
 
         angle+=0.05;
         if(angle>360) angle=0;
 
         mMat = glm::translate(glm::mat4(1.f), glm::vec3(lockX, lockY, lockZ))*mRot; //offset
-        sMat = glm::scale(glm::mat4(1.f), glm::vec3(15.f, 15.f, 15.f));
+        //mMat = glm::translate(glm::mat4(1.f), glm::vec3(lockX, lockY, lockZ));
+        sMat = glm::scale(glm::mat4(1.f), glm::vec3(12.f, 12.f, 12.f));
 
+        //mvMat = vMat * mMat * sMat;
         mvMat = vMat * mMat * sMat;
         //mvMat = vMat*sMat;
 
@@ -238,10 +251,11 @@ int main()
         //glDrawArrays(GL_POINTS, 0, 3);
         glDrawArrays(GL_TRIANGLES, 0, bunnyNVertices);
 
-        //draw pyramid
+        //Rotaciones Dragon
+        mRot  = mBack*glm::rotate(mOrg, angle , glm::vec3(0, 1, 0 ));
 
-        mMat = glm::translate(glm::mat4(1.f), glm::vec3(pyLockX, pyLockY, pyLockZ)); //offset
-        sMat = glm::scale(glm::mat4(1.f), glm::vec3(10.f, 10.f, 10.f));
+        mMat = glm::translate(glm::mat4(1.f), glm::vec3(pyLockX, pyLockY, pyLockZ))*mRot; //offset
+        sMat = glm::scale(glm::mat4(1.f), glm::vec3(14.f, 14.f, 14.f));
 
         mvMat = vMat * mMat * sMat;
 

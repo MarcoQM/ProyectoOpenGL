@@ -38,6 +38,12 @@ vector
 iostream
 -
 
+/home/marco/ProyectosQt/ProyectoFinalCG/Topology.h
+iostream
+-
+vector
+-
+
 /home/marco/ProyectosQt/ProyectoFinalCG/main.cpp
 iostream
 -
@@ -57,4 +63,6 @@ OBJFile.h
 /home/marco/ProyectosQt/ProyectoFinalCG/OBJFile.h
 Geometry.h
 /home/marco/ProyectosQt/ProyectoFinalCG/Geometry.h
+Topology.h
+/home/marco/ProyectosQt/ProyectoFinalCG/Topology.h
 

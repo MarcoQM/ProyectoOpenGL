@@ -204,6 +204,33 @@ OBJFile2.cpp.s:
 	$(MAKE) -f CMakeFiles/ProyectoFinalCG.dir/build.make CMakeFiles/ProyectoFinalCG.dir/OBJFile2.cpp.s
 .PHONY : OBJFile2.cpp.s
 
+Topology.o: Topology.cpp.o
+
+.PHONY : Topology.o
+
+# target to build an object file
+Topology.cpp.o:
+	$(MAKE) -f CMakeFiles/ProyectoFinalCG.dir/build.make CMakeFiles/ProyectoFinalCG.dir/Topology.cpp.o
+.PHONY : Topology.cpp.o
+
+Topology.i: Topology.cpp.i
+
+.PHONY : Topology.i
+
+# target to preprocess a source file
+Topology.cpp.i:
+	$(MAKE) -f CMakeFiles/ProyectoFinalCG.dir/build.make CMakeFiles/ProyectoFinalCG.dir/Topology.cpp.i
+.PHONY : Topology.cpp.i
+
+Topology.s: Topology.cpp.s
+
+.PHONY : Topology.s
+
+# target to generate assembly for a file
+Topology.cpp.s:
+	$(MAKE) -f CMakeFiles/ProyectoFinalCG.dir/build.make CMakeFiles/ProyectoFinalCG.dir/Topology.cpp.s
+.PHONY : Topology.cpp.s
+
 main.o: main.cpp.o
 
 .PHONY : main.o
@@ -276,6 +303,9 @@ help:
 	@echo "... OBJFile2.o"
 	@echo "... OBJFile2.i"
 	@echo "... OBJFile2.s"
+	@echo "... Topology.o"
+	@echo "... Topology.i"
+	@echo "... Topology.s"
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"
