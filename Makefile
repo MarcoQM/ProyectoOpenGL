@@ -177,33 +177,6 @@ OBJFile.cpp.s:
 	$(MAKE) -f CMakeFiles/ProyectoFinalCG.dir/build.make CMakeFiles/ProyectoFinalCG.dir/OBJFile.cpp.s
 .PHONY : OBJFile.cpp.s
 
-OBJFile2.o: OBJFile2.cpp.o
-
-.PHONY : OBJFile2.o
-
-# target to build an object file
-OBJFile2.cpp.o:
-	$(MAKE) -f CMakeFiles/ProyectoFinalCG.dir/build.make CMakeFiles/ProyectoFinalCG.dir/OBJFile2.cpp.o
-.PHONY : OBJFile2.cpp.o
-
-OBJFile2.i: OBJFile2.cpp.i
-
-.PHONY : OBJFile2.i
-
-# target to preprocess a source file
-OBJFile2.cpp.i:
-	$(MAKE) -f CMakeFiles/ProyectoFinalCG.dir/build.make CMakeFiles/ProyectoFinalCG.dir/OBJFile2.cpp.i
-.PHONY : OBJFile2.cpp.i
-
-OBJFile2.s: OBJFile2.cpp.s
-
-.PHONY : OBJFile2.s
-
-# target to generate assembly for a file
-OBJFile2.cpp.s:
-	$(MAKE) -f CMakeFiles/ProyectoFinalCG.dir/build.make CMakeFiles/ProyectoFinalCG.dir/OBJFile2.cpp.s
-.PHONY : OBJFile2.cpp.s
-
 Topology.o: Topology.cpp.o
 
 .PHONY : Topology.o
@@ -258,33 +231,6 @@ main.cpp.s:
 	$(MAKE) -f CMakeFiles/ProyectoFinalCG.dir/build.make CMakeFiles/ProyectoFinalCG.dir/main.cpp.s
 .PHONY : main.cpp.s
 
-main2.o: main2.cpp.o
-
-.PHONY : main2.o
-
-# target to build an object file
-main2.cpp.o:
-	$(MAKE) -f CMakeFiles/ProyectoFinalCG.dir/build.make CMakeFiles/ProyectoFinalCG.dir/main2.cpp.o
-.PHONY : main2.cpp.o
-
-main2.i: main2.cpp.i
-
-.PHONY : main2.i
-
-# target to preprocess a source file
-main2.cpp.i:
-	$(MAKE) -f CMakeFiles/ProyectoFinalCG.dir/build.make CMakeFiles/ProyectoFinalCG.dir/main2.cpp.i
-.PHONY : main2.cpp.i
-
-main2.s: main2.cpp.s
-
-.PHONY : main2.s
-
-# target to generate assembly for a file
-main2.cpp.s:
-	$(MAKE) -f CMakeFiles/ProyectoFinalCG.dir/build.make CMakeFiles/ProyectoFinalCG.dir/main2.cpp.s
-.PHONY : main2.cpp.s
-
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -300,18 +246,12 @@ help:
 	@echo "... OBJFile.o"
 	@echo "... OBJFile.i"
 	@echo "... OBJFile.s"
-	@echo "... OBJFile2.o"
-	@echo "... OBJFile2.i"
-	@echo "... OBJFile2.s"
 	@echo "... Topology.o"
 	@echo "... Topology.i"
 	@echo "... Topology.s"
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"
-	@echo "... main2.o"
-	@echo "... main2.i"
-	@echo "... main2.s"
 .PHONY : help
 
 

@@ -44,7 +44,7 @@ int main()
     }
 
     // Se realiza la lectura de los archivos obj
-    OBJFile objBunny("conejo2.obj");
+    OBJFile objBunny("conejo1.obj");
     Geometry geometryBunny(objBunny);
     Topology topologyBunny(geometryBunny.GetIndices());
 

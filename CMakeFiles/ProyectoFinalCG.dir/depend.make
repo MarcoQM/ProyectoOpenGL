@@ -8,9 +8,6 @@ CMakeFiles/ProyectoFinalCG.dir/Geometry.cpp.o: OBJFile.h
 CMakeFiles/ProyectoFinalCG.dir/OBJFile.cpp.o: OBJFile.cpp
 CMakeFiles/ProyectoFinalCG.dir/OBJFile.cpp.o: OBJFile.h
 
-CMakeFiles/ProyectoFinalCG.dir/OBJFile2.cpp.o: OBJFile2.cpp
-CMakeFiles/ProyectoFinalCG.dir/OBJFile2.cpp.o: OBJFile2.h
-
 CMakeFiles/ProyectoFinalCG.dir/Topology.cpp.o: Topology.cpp
 CMakeFiles/ProyectoFinalCG.dir/Topology.cpp.o: Topology.h
 
@@ -18,7 +15,4 @@ CMakeFiles/ProyectoFinalCG.dir/main.cpp.o: Geometry.h
 CMakeFiles/ProyectoFinalCG.dir/main.cpp.o: OBJFile.h
 CMakeFiles/ProyectoFinalCG.dir/main.cpp.o: Topology.h
 CMakeFiles/ProyectoFinalCG.dir/main.cpp.o: main.cpp
-
-CMakeFiles/ProyectoFinalCG.dir/main2.cpp.o: OBJFile.h
-CMakeFiles/ProyectoFinalCG.dir/main2.cpp.o: main2.cpp
 

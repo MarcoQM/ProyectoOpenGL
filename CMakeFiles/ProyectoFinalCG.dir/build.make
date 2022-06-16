@@ -96,22 +96,9 @@ CMakeFiles/ProyectoFinalCG.dir/OBJFile.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/ProyectoFinalCG.dir/OBJFile.cpp.s"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/marco/ProyectosQt/ProyectoFinalCG/OBJFile.cpp -o CMakeFiles/ProyectoFinalCG.dir/OBJFile.cpp.s
 
-CMakeFiles/ProyectoFinalCG.dir/OBJFile2.cpp.o: CMakeFiles/ProyectoFinalCG.dir/flags.make
-CMakeFiles/ProyectoFinalCG.dir/OBJFile2.cpp.o: OBJFile2.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/marco/ProyectosQt/ProyectoFinalCG/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/ProyectoFinalCG.dir/OBJFile2.cpp.o"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/ProyectoFinalCG.dir/OBJFile2.cpp.o -c /home/marco/ProyectosQt/ProyectoFinalCG/OBJFile2.cpp
-
-CMakeFiles/ProyectoFinalCG.dir/OBJFile2.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/ProyectoFinalCG.dir/OBJFile2.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/marco/ProyectosQt/ProyectoFinalCG/OBJFile2.cpp > CMakeFiles/ProyectoFinalCG.dir/OBJFile2.cpp.i
-
-CMakeFiles/ProyectoFinalCG.dir/OBJFile2.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/ProyectoFinalCG.dir/OBJFile2.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/marco/ProyectosQt/ProyectoFinalCG/OBJFile2.cpp -o CMakeFiles/ProyectoFinalCG.dir/OBJFile2.cpp.s
-
 CMakeFiles/ProyectoFinalCG.dir/Topology.cpp.o: CMakeFiles/ProyectoFinalCG.dir/flags.make
 CMakeFiles/ProyectoFinalCG.dir/Topology.cpp.o: Topology.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/marco/ProyectosQt/ProyectoFinalCG/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/ProyectoFinalCG.dir/Topology.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/marco/ProyectosQt/ProyectoFinalCG/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/ProyectoFinalCG.dir/Topology.cpp.o"
 	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/ProyectoFinalCG.dir/Topology.cpp.o -c /home/marco/ProyectosQt/ProyectoFinalCG/Topology.cpp
 
 CMakeFiles/ProyectoFinalCG.dir/Topology.cpp.i: cmake_force
@@ -122,27 +109,12 @@ CMakeFiles/ProyectoFinalCG.dir/Topology.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/ProyectoFinalCG.dir/Topology.cpp.s"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/marco/ProyectosQt/ProyectoFinalCG/Topology.cpp -o CMakeFiles/ProyectoFinalCG.dir/Topology.cpp.s
 
-CMakeFiles/ProyectoFinalCG.dir/main2.cpp.o: CMakeFiles/ProyectoFinalCG.dir/flags.make
-CMakeFiles/ProyectoFinalCG.dir/main2.cpp.o: main2.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/marco/ProyectosQt/ProyectoFinalCG/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/ProyectoFinalCG.dir/main2.cpp.o"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/ProyectoFinalCG.dir/main2.cpp.o -c /home/marco/ProyectosQt/ProyectoFinalCG/main2.cpp
-
-CMakeFiles/ProyectoFinalCG.dir/main2.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/ProyectoFinalCG.dir/main2.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/marco/ProyectosQt/ProyectoFinalCG/main2.cpp > CMakeFiles/ProyectoFinalCG.dir/main2.cpp.i
-
-CMakeFiles/ProyectoFinalCG.dir/main2.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/ProyectoFinalCG.dir/main2.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/marco/ProyectosQt/ProyectoFinalCG/main2.cpp -o CMakeFiles/ProyectoFinalCG.dir/main2.cpp.s
-
 # Object files for target ProyectoFinalCG
 ProyectoFinalCG_OBJECTS = \
 "CMakeFiles/ProyectoFinalCG.dir/main.cpp.o" \
 "CMakeFiles/ProyectoFinalCG.dir/Geometry.cpp.o" \
 "CMakeFiles/ProyectoFinalCG.dir/OBJFile.cpp.o" \
-"CMakeFiles/ProyectoFinalCG.dir/OBJFile2.cpp.o" \
-"CMakeFiles/ProyectoFinalCG.dir/Topology.cpp.o" \
-"CMakeFiles/ProyectoFinalCG.dir/main2.cpp.o"
+"CMakeFiles/ProyectoFinalCG.dir/Topology.cpp.o"
 
 # External object files for target ProyectoFinalCG
 ProyectoFinalCG_EXTERNAL_OBJECTS =
@@ -150,9 +122,7 @@ ProyectoFinalCG_EXTERNAL_OBJECTS =
 ProyectoFinalCG: CMakeFiles/ProyectoFinalCG.dir/main.cpp.o
 ProyectoFinalCG: CMakeFiles/ProyectoFinalCG.dir/Geometry.cpp.o
 ProyectoFinalCG: CMakeFiles/ProyectoFinalCG.dir/OBJFile.cpp.o
-ProyectoFinalCG: CMakeFiles/ProyectoFinalCG.dir/OBJFile2.cpp.o
 ProyectoFinalCG: CMakeFiles/ProyectoFinalCG.dir/Topology.cpp.o
-ProyectoFinalCG: CMakeFiles/ProyectoFinalCG.dir/main2.cpp.o
 ProyectoFinalCG: CMakeFiles/ProyectoFinalCG.dir/build.make
 ProyectoFinalCG: /usr/lib/x86_64-linux-gnu/libGL.so
 ProyectoFinalCG: /usr/local/lib/libglfw3.a
@@ -161,7 +131,7 @@ ProyectoFinalCG: /usr/lib/x86_64-linux-gnu/librt.so
 ProyectoFinalCG: /usr/lib/x86_64-linux-gnu/libm.so
 ProyectoFinalCG: /usr/lib/x86_64-linux-gnu/libX11.so
 ProyectoFinalCG: CMakeFiles/ProyectoFinalCG.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/marco/ProyectosQt/ProyectoFinalCG/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Linking CXX executable ProyectoFinalCG"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/marco/ProyectosQt/ProyectoFinalCG/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Linking CXX executable ProyectoFinalCG"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/ProyectoFinalCG.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
