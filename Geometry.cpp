@@ -5,14 +5,24 @@ Geometry::Geometry(const OBJFile& objFile)
     const OBJFile::Indices& objIndices{objFile.GetIndices()};
     const OBJFile::Vertices& objVertex{objFile.GetVertices()};
     numVertexPositionElements = objVertex.size();
-    unsigned short index;
+
+    for (unsigned int i = 0; i < objVertex.size(); ++i)
+    {
+        m_Vertices.emplace_back(objVertex[i]);
+    }
+
+    for (unsigned int i = 0; i < objIndices.size(); ++i)
+    {
+        m_Indices.emplace_back(objIndices[i]);
+    }
+    /*unsigned short index;
 
     for (unsigned int i = 0; i < objIndices.size(); ++i)
     {
         index = objIndices[i];
         m_Vertices.emplace_back(objVertex[index-1]);
         m_Indices.emplace_back(objIndices[i]);
-    }
+    }*/
 }
 
 void Geometry::SetVertices(const Vertices& vertices)

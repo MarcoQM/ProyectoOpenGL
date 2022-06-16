@@ -13,6 +13,7 @@
 #include "Topology.h"
 
 glm::vec3 functionF(glm::vec3 x, float t);
+void updatePrimitives(std::vector<glm::vec3> &vertices, std::vector<unsigned short> &indices, std::vector<glm::vec3> &primitives);
 
 int main()
 {
@@ -48,20 +49,30 @@ int main()
     Geometry geometryBunny(objBunny);
     Topology topologyBunny(geometryBunny.GetIndices());
 
-    for (unsigned i = 0; i < topologyBunny.GetEdges().size(); ++i)
+    /*for (unsigned i = 0; i < topologyBunny.GetEdges().size(); ++i)
     {
         std::cout << topologyBunny.GetEdges()[i] << std::endl;
     }
-    std::cout << "tamanio topologia " << topologyBunny.GetEdges().size() << std::endl;
+    std::cout << "tamanio topologia " << topologyBunny.GetEdges().size() << std::endl;*/
 
     OBJFile objDragon("dragon1.obj");
     Geometry geometryDragon(objDragon);
+    Topology topologyDragon(geometryDragon.GetIndices());
 
-    std::vector<glm::vec3> bunny{geometryBunny.GetVertices()};
-    std::vector<glm::vec3> dragon{geometryDragon.GetVertices()};
+    //std::vector<glm::vec3> bunny{geometryBunny.GetVertices()};
+    //std::vector<glm::vec3> dragon{geometryDragon.GetVertices()};
+    std::vector<glm::vec3> verticesBunny{geometryBunny.GetVertices()};
+    std::vector<glm::vec3> verticesDragon{geometryDragon.GetVertices()};
 
-    std::cout << bunny.size() << std::endl;
-    std::cout << geometryBunny.GetIndices().size() << std::endl;
+    std::vector<unsigned short> indicesBunny{geometryBunny.GetIndices()};
+    std::vector<unsigned short> indicesDragon{geometryDragon.GetIndices()};
+
+    std::vector<glm::vec3> bunny(indicesBunny.size());
+    std::vector<glm::vec3> dragon(indicesDragon.size());
+
+    // Se formas las primitivas para enviarlas a opengl
+    updatePrimitives(verticesBunny, indicesBunny, bunny);
+    updatePrimitives(verticesDragon, indicesDragon, dragon);
 
     unsigned bunnyNVertices = bunny.size();
     unsigned dragonNVertices = dragon.size();
@@ -166,7 +177,7 @@ int main()
         // aminate here
         // std::cout<<bunnyNVertices<<std::endl;
         // std::cout<<bunny.size()<<std::endl;
-        for (unsigned int i = 0; i < bunnyNVertices; ++i)
+        for (unsigned int i = 0; i < verticesBunny.size(); ++i)
         {
             //velocityBunny[i] = velocityBunny[i] + (-0.98f / 1.f);
             //bunny[i] = bunny[i] + h * velocityBunny[i];
@@ -174,11 +185,11 @@ int main()
             k1 = h * functionF(velocityBunny[i], timeBunny);
             k2 = h * functionF(velocityBunny[i] + k1 / 2.f, timeBunny + h / 2.f);
             velocityBunny[i] = velocityBunny[i] + k2;
-            bunny[i] = bunny[i] + velocityBunny[i] * timeBunny;
+            verticesBunny[i] = verticesBunny[i] + velocityBunny[i] * timeBunny;
         }
         timeBunny+=h;
 
-        for (unsigned int i = 0; i < dragonNVertices; ++i)
+        for (unsigned int i = 0; i < verticesDragon.size(); ++i)
         {
             //velocityDragon[i] = velocityDragon[i] + (-0.98f / 1.f);
             //dragon[i] = dragon[i] + h * velocityDragon[i];
@@ -186,9 +197,12 @@ int main()
             k1 = h * functionF(velocityDragon[i], timeDragon);
             k2 = h * functionF(velocityDragon[i] + k1 / 2.f, timeDragon + h / 2.f);
             velocityDragon[i] = velocityDragon[i] + k2;
-            dragon[i] = dragon[i] + velocityDragon[i] * timeDragon;
+            verticesDragon[i] = verticesDragon[i] + velocityDragon[i] * timeDragon;
         }
         timeDragon+=h;
+
+        updatePrimitives(verticesBunny, indicesBunny, bunny);
+        updatePrimitives(verticesDragon, indicesDragon, dragon);
 
 
         glm::mat4 mOrg = glm::translate(glm::mat4(1.f), glm::vec3(1.0f, -1.0f, 1.0f));   // offset
@@ -254,4 +268,15 @@ glm::vec3 functionF(glm::vec3 x, float t)
 {
     glm::vec3 gravity(0, -0.98, 0);
     return gravity;
+}
+
+void updatePrimitives(std::vector<glm::vec3> &vertices, std::vector<unsigned short> &indices, std::vector<glm::vec3> &primitives)
+{
+    unsigned short index;
+
+    for (unsigned int i = 0; i < indices.size(); ++i)
+    {
+        index = indices[i];
+        primitives[i] = vertices[index-1];
+    }
 }
