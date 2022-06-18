@@ -3,6 +3,7 @@
 
 #include<iostream>
 #include<vector>
+#include "Util.h"
 
 class Topology
 {
@@ -43,7 +44,6 @@ public:
 
     void SetEdges(const Edges& edges);
     const Edges &GetEdges() const;
-
 };
 
 

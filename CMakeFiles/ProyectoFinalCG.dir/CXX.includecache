@@ -43,6 +43,18 @@ iostream
 -
 vector
 -
+Util.h
+/home/marco/ProyectosQt/ProyectoFinalCG/Util.h
+
+/home/marco/ProyectosQt/ProyectoFinalCG/Util.h
+vector
+-
+cmath
+-
+iostream
+-
+fstream
+-
 
 /home/marco/ProyectosQt/ProyectoFinalCG/main.cpp
 iostream

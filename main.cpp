@@ -12,8 +12,22 @@
 #include "Geometry.h"
 #include "Topology.h"
 
-glm::vec3 functionF(glm::vec3 x, float t);
-void updatePrimitives(std::vector<glm::vec3> &vertices, std::vector<unsigned short> &indices, std::vector<glm::vec3> &primitives);
+glm::vec3 functionF(glm::vec3 x, float t)
+{
+    glm::vec3 gravity(0, -0.98, 0);
+    return gravity;
+}
+
+void updatePrimitives(std::vector<glm::vec3> &vertices, std::vector<unsigned short> &indices, std::vector<glm::vec3> &primitives)
+{
+    unsigned short index;
+
+    for (unsigned int i = 0; i < indices.size(); ++i)
+    {
+        index = indices[i];
+        primitives[i] = vertices[index-1];
+    }
+}
 
 int main()
 {
@@ -49,11 +63,11 @@ int main()
     Geometry geometryBunny(objBunny);
     Topology topologyBunny(geometryBunny.GetIndices());
 
-    /*for (unsigned i = 0; i < topologyBunny.GetEdges().size(); ++i)
+    for (unsigned i = 0; i < topologyBunny.GetEdges().size(); ++i)
     {
         std::cout << topologyBunny.GetEdges()[i] << std::endl;
     }
-    std::cout << "tamanio topologia " << topologyBunny.GetEdges().size() << std::endl;*/
+    std::cout << "tamanio topologia " << topologyBunny.GetEdges().size() << std::endl;
 
     OBJFile objDragon("dragon1.obj");
     Geometry geometryDragon(objDragon);
@@ -255,6 +269,7 @@ int main()
         glfwSwapBuffers(window); // Buffers->OpenGL
 
         glfwPollEvents(); // User
+        
     }
 
     glfwTerminate();
@@ -263,19 +278,4 @@ int main()
     return 0;
 }
 
-glm::vec3 functionF(glm::vec3 x, float t)
-{
-    glm::vec3 gravity(0, -0.98, 0);
-    return gravity;
-}
 
-void updatePrimitives(std::vector<glm::vec3> &vertices, std::vector<unsigned short> &indices, std::vector<glm::vec3> &primitives)
-{
-    unsigned short index;
-
-    for (unsigned int i = 0; i < indices.size(); ++i)
-    {
-        index = indices[i];
-        primitives[i] = vertices[index-1];
-    }
-}
