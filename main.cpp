@@ -29,6 +29,20 @@ void updatePrimitives(std::vector<glm::vec3> &vertices, std::vector<unsigned sho
     }
 }
 
+void calculateDistance( Geometry::Vertices &vertices, Topology::Edges &edges, std::vector<float> &distances) 
+{
+    unsigned short vertexA, vertexB;
+    for(unsigned i = 0; i < distances.size(); ++i)
+    {
+        vertexA = edges[i].GetVertexA();
+        vertexB = edges[i].GetVertexB();
+        distances[i] = glm::length(vertices[vertexA]-vertices[vertexB]);
+    }
+}
+
+
+
+
 int main()
 {
 
@@ -60,40 +74,46 @@ int main()
 
     // Se realiza la lectura de los archivos obj
     OBJFile objBunny("conejo1.obj");
+
     Geometry geometryBunny(objBunny);
     Topology topologyBunny(geometryBunny.GetIndices());
 
-    for (unsigned i = 0; i < topologyBunny.GetEdges().size(); ++i)
-    {
-        std::cout << topologyBunny.GetEdges()[i] << std::endl;
-    }
-    std::cout << "tamanio topologia " << topologyBunny.GetEdges().size() << std::endl;
+    Geometry::Vertices verticesBunny{geometryBunny.GetVertices()};
+    Geometry::Indices indicesBunny{geometryBunny.GetIndices()};
+    // Se forman las primitivas para enviarlas a opengl
+    std::vector<glm::vec3> bunny(indicesBunny.size());
+    updatePrimitives(verticesBunny, indicesBunny, bunny);
+    unsigned bunnyNVertices = bunny.size();
+    // Vector de velocidad
+    std::vector<glm::vec3> velocityBunny(bunnyNVertices, glm::vec3(0, 0, 0));
+    //Se obtienen las aristas
+    Topology::Edges edgesBunny(topologyBunny.GetEdges());
+    //Se calcula la distancia entre puntos de cada arista
+    std::vector<float> distancesBunny(edgesBunny.size());
+    calculateDistance(verticesBunny, edgesBunny, distancesBunny);
+   
 
     OBJFile objDragon("dragon1.obj");
+
     Geometry geometryDragon(objDragon);
     Topology topologyDragon(geometryDragon.GetIndices());
 
-    //std::vector<glm::vec3> bunny{geometryBunny.GetVertices()};
-    //std::vector<glm::vec3> dragon{geometryDragon.GetVertices()};
-    std::vector<glm::vec3> verticesBunny{geometryBunny.GetVertices()};
-    std::vector<glm::vec3> verticesDragon{geometryDragon.GetVertices()};
-
-    std::vector<unsigned short> indicesBunny{geometryBunny.GetIndices()};
-    std::vector<unsigned short> indicesDragon{geometryDragon.GetIndices()};
-
-    std::vector<glm::vec3> bunny(indicesBunny.size());
+    Geometry::Vertices verticesDragon{geometryDragon.GetVertices()};
+    Geometry::Indices indicesDragon{geometryDragon.GetIndices()};
+    // Se forman las primitivas para enviarlas a opengl
     std::vector<glm::vec3> dragon(indicesDragon.size());
-
-    // Se formas las primitivas para enviarlas a opengl
-    updatePrimitives(verticesBunny, indicesBunny, bunny);
     updatePrimitives(verticesDragon, indicesDragon, dragon);
-
-    unsigned bunnyNVertices = bunny.size();
     unsigned dragonNVertices = dragon.size();
-
     // Vector de velocidad
-    std::vector<glm::vec3> velocityBunny(bunnyNVertices, glm::vec3(0, 0, 0));
     std::vector<glm::vec3> velocityDragon(dragonNVertices, glm::vec3(0, 0, 0));
+    //Se obtienen las aristas
+    Topology::Edges edgesDragon(topologyDragon.GetEdges());
+    //Se calcula la distancia entre puntos de cada arista
+    std::vector<float> distancesDragon(edgesDragon.size());
+    calculateDistance(verticesDragon, edgesDragon, distancesDragon);
+
+
+
 
     GLuint vbo[2]; // vertex buffer object para cada objeto
 
