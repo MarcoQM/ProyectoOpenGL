@@ -120,9 +120,9 @@ int main()
     std::vector<glm::vec3> normalsBunny(indicesBunny.size());
     calculateNormals(bunny, normalsBunny);
 
-    for(glm::vec3 &n: normalsBunny) {
+    /*for(glm::vec3 &n: normalsBunny) {
         std::cout<<n.x<<"\t"<<n.y<<"\t"<<n.z<<std::endl;
-    }
+    }*/
    
 
     OBJFile objDragon("dragon1.obj");
@@ -147,36 +147,85 @@ int main()
 
 
 
-    GLuint vbo[2]; // vertex buffer object para cada objeto
+    GLuint vbo[4]; // vertex buffer object para cada objeto
 
     glGenBuffers(1, &vbo[0]);
     glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
     glBufferData(GL_ARRAY_BUFFER, bunnyNVertices * 3 * sizeof(float), &bunny[0], GL_STATIC_DRAW);
 
+    glGenBuffers(1, &vbo[2]); //normals bunny
+    glBindBuffer(GL_ARRAY_BUFFER, vbo[2]);
+    glBufferData(GL_ARRAY_BUFFER, normalsBunny.size()*3*sizeof(float), &normalsBunny[0], GL_STATIC_DRAW);
+
     glGenBuffers(1, &vbo[1]);
     glBindBuffer(GL_ARRAY_BUFFER, vbo[1]);
     glBufferData(GL_ARRAY_BUFFER, dragonNVertices * 3 * sizeof(float), &dragon[0], GL_STATIC_DRAW);
+
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0,3, GL_FLOAT, GL_FALSE, 0, nullptr);
 
     GLuint vao;
     glGenVertexArrays(1, &vao);
     glBindVertexArray(vao);
 
-    const char *verter_shader =
-        "#version 400\n"
-        "in vec3 vp;"
-        "uniform mat4 mvMatrix;"   // model-view
-        "uniform mat4 projMatrix;" // projection
-        "void main(){"
-        "gl_Position = projMatrix * mvMatrix * vec4(vp, 1.0);"
-        "}";
+
+
+    const char* verter_shader =
+            "#version 400\n"
+            "uniform mat4 projMatrix;" //projection
+            "uniform mat4 mvMatrix;" // model-view
+
+            "layout (location=0) in vec3 vertPos;"
+            "layout (location=1) in vec3 vertNormal;"
+
+            "out vec4 varyingColor;"
+
+            "struct PositionalLight"
+            "{ vec4 ambient;"
+            "vec4 diffuse;"
+            "vec4 specular;"
+            "vec3 position;"
+            "};"
+
+            "struct Material"
+            "{ vec4 ambient;"
+            "vec4 diffuse;"
+            "vec4 specular;"
+            "float shininess;"
+            "};"
+
+
+            "uniform vec4 globalAmbient;"
+            "uniform PositionalLight light;"
+            "uniform Material material;"
+            "uniform mat4 norm_matrix;" // for transforming normals
+
+            "void main()"
+            "{"
+
+            "vec4 P = mvMatrix * vec4(vertPos,1.0);"
+
+            "vec3 N = normalize((norm_matrix * vec4(vertNormal,1.0)).xyz);"
+            "vec3 L = normalize(light.position - P.xyz);"
+            "vec3 V = normalize(-P.xyz);"
+            "vec3 R = reflect(-L,N);"
+
+            "vec3 ambient = ((globalAmbient * material.ambient) + (light.ambient * material.ambient)).xyz;"
+            "vec3 diffuse = light.diffuse.xyz * material.diffuse.xyz * max(dot(N,L), 0.0);"
+            "vec3 specular= material.specular.xyz * light.specular.xyz * pow(max(dot(R,V), 0.0f), material.shininess);"
+            "varyingColor = vec4((ambient + diffuse + specular), 1.0);"
+            "gl_Position = projMatrix*mvMatrix*vec4(vertPos, 1.0);"
+
+            "}";
 
     const char *fragment_shader =
         "#version 400\n"
-        "out vec4 frag_color;"
+        "out vec4 color;"
+        "in vec4 varyingColor;"
         "uniform mat4 mvMatrix;"   // model-view
         "uniform mat4 projMatrix;" // projection
         "void main(){"
-        "frag_color = vec4(1.0, 1.0, 1.0, 0.0);"
+        "color = varyingColor;"
         "}";
 
     GLuint vs = glCreateShader(GL_VERTEX_SHADER);
@@ -217,12 +266,36 @@ int main()
     glm::mat4 mMat, vMat, mvMat, pMat, sMat;
 
     float angle = 0;
+
+    //light
+
+
+    // SILVER material - ambient, diffuse, specular, and shininess
+    //material
+    float matAmbSilver[4] = {0.1923f, 0.1923f, 0.1923f, 1}; //RGB-A
+    float matDifSilver[4] = {0.5075f, 0.5075f, 0.5075f, 1};
+    float matSpeSilver[4] = {0.5083f, 0.5083f, 0.5083f, 1};
+    float matShiSilver = 51.2f;
+    
+    //light source
+    // white light properties
+    float globalAmbient[4] = {0.7f, 0.7f, 0.7f, 1.0f };
+
+    float lightAmbient[4]  = {0.0f, 0.0f, 0.0f, 1.0f };
+    float lightDiffuse[4]  = {1.0f, 1.0f, 1.0f, 1.0f };
+    float lightSpecular[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
+
+    glm::vec3 currentLightPos, lightPosV; // light position as Vector3f, in both model and view space
+    float lightPos[3];
+
+
+
     while (glfwWindowShouldClose(window) == 0) // animation
     {
 
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
         glClear(GL_COLOR_BUFFER_BIT);
-        glClearColor(0.1, 0.1, 0.1, 0.0); // RGB/255
+        glClearColor(0.0, 0.0, 0.2, 1.0); // RGB/255
 
         // get matrix locations
         GLuint mvLoc = glGetUniformLocation(shaderProgram, "mvMatrix");
@@ -241,8 +314,43 @@ int main()
         // vMat =  vMat*vRot;
 
         // aminate here
-        // std::cout<<bunnyNVertices<<std::endl;
-        // std::cout<<bunny.size()<<std::endl;
+        //light pyramid
+
+        GLuint globalAmbLoc, ambLoc, diffLoc, specLoc, posLoc, mAmbLoc, mDiffLoc, mSpecLoc, mShiLoc;
+        globalAmbLoc = glGetUniformLocation(shaderProgram, "globalAmbient");
+        ambLoc = glGetUniformLocation(shaderProgram, "light.ambient");
+        diffLoc = glGetUniformLocation(shaderProgram, "light.diffuse");
+        specLoc = glGetUniformLocation(shaderProgram, "light.specular");
+        posLoc = glGetUniformLocation(shaderProgram, "light.position");
+        mAmbLoc = glGetUniformLocation(shaderProgram, "material.ambient");
+        mDiffLoc = glGetUniformLocation(shaderProgram, "material.diffuse");
+        mSpecLoc = glGetUniformLocation(shaderProgram, "material.specular");
+        mShiLoc = glGetUniformLocation(shaderProgram, "material.shininess");
+        GLuint nLoc = glGetUniformLocation(shaderProgram, "norm_matrix");
+
+        currentLightPos = glm::vec3(5.0f, 5.0f, 2.0f);
+        lightPosV = glm::vec3(vMat * glm::vec4(currentLightPos, 1.0));
+
+        lightPos[0] = lightPosV.x;
+        lightPos[1] = lightPosV.y;
+        lightPos[2] = lightPosV.z;
+
+        glm::mat4 invTrMat = glm::transpose(glm::inverse(mvMat)); //model-view for normals
+
+        glProgramUniform4fv(shaderProgram, globalAmbLoc, 1, globalAmbient);
+        glProgramUniform4fv(shaderProgram, ambLoc, 1, lightAmbient);
+        glProgramUniform4fv(shaderProgram, diffLoc, 1, lightDiffuse);
+        glProgramUniform4fv(shaderProgram, specLoc, 1, lightSpecular);
+        glProgramUniform3fv(shaderProgram, posLoc, 1, lightPos);
+        glProgramUniform4fv(shaderProgram, mAmbLoc, 1, matAmbSilver);
+        glProgramUniform4fv(shaderProgram, mDiffLoc, 1, matDifSilver);
+        glProgramUniform4fv(shaderProgram, mSpecLoc, 1, matSpeSilver);
+        glProgramUniform1f(shaderProgram, mShiLoc, matShiSilver);
+        glUniformMatrix4fv(nLoc, 1, GL_FALSE, glm::value_ptr(invTrMat));
+
+
+
+
         for (unsigned int i = 0; i < verticesBunny.size(); ++i)
         {
             //velocityBunny[i] = velocityBunny[i] + (-0.98f / 1.f);
@@ -294,9 +402,13 @@ int main()
 
         glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
         glBufferData(GL_ARRAY_BUFFER, bunnyNVertices * 3 * sizeof(float), &bunny[0], GL_STATIC_DRAW);
-
         glEnableVertexAttribArray(0);
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
+
+        glBindBuffer(GL_ARRAY_BUFFER, vbo[2]); //pyramid normals
+        glBufferData(GL_ARRAY_BUFFER, normalsBunny.size()*3 * sizeof(float)  , &normalsBunny[0], GL_STATIC_DRAW);
+        glVertexAttribPointer(1,3, GL_FLOAT, GL_FALSE, 0, nullptr);
+        glEnableVertexAttribArray(1);
 
         // glPointSize(10.f);
         // glDrawArrays(GL_POINTS, 0, 3);
