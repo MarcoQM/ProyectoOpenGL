@@ -40,8 +40,33 @@ void calculateDistance( Geometry::Vertices &vertices, Topology::Edges &edges, st
     }
 }
 
+void calculateNormals(std::vector<glm::vec3> &primitives, std::vector<glm::vec3> &normals) 
+{
+    unsigned short index1, index2, index3;
+    glm::vec3 p1, p2, p3;
+    glm::vec3 normal;
+    glm::vec3 A, B;
 
+    for (unsigned int i = 0; i < primitives.size(); i+=3)
+    {
 
+        p1 = primitives[i];
+        p2 = primitives[i+1];
+        p3 = primitives[i+2];
+
+        A = p2 - p1;
+        B = p3 - p1;
+
+        normal.x = (A.y * B.z) - (A.z * B.y);
+        normal.y = (A.z * B.x) - (A.x * B.z);
+        normal.x = (A.x * B.y) - (A.y * B.x);
+
+        normals[i] = normal;
+        normals[i+1] = normal;
+        normals[i+2] = normal;
+        //std::cout<<normal.x<<"\t"<<normal.y<<"\t"<<normal.z<<std::endl;
+    }
+}
 
 int main()
 {
@@ -91,6 +116,13 @@ int main()
     //Se calcula la distancia entre puntos de cada arista
     std::vector<float> distancesBunny(edgesBunny.size());
     calculateDistance(verticesBunny, edgesBunny, distancesBunny);
+    // Se calcula las normales
+    std::vector<glm::vec3> normalsBunny(indicesBunny.size());
+    calculateNormals(bunny, normalsBunny);
+
+    for(glm::vec3 &n: normalsBunny) {
+        std::cout<<n.x<<"\t"<<n.y<<"\t"<<n.z<<std::endl;
+    }
    
 
     OBJFile objDragon("dragon1.obj");
