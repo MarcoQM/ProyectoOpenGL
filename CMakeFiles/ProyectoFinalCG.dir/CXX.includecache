@@ -6,6 +6,10 @@
 
 #IncludeRegexTransform: 
 
+/home/marco/ProyectosQt/ProyectoFinalCG/Geometry.cpp
+Geometry.h
+/home/marco/ProyectosQt/ProyectoFinalCG/Geometry.h
+
 /home/marco/ProyectosQt/ProyectoFinalCG/Geometry.h
 glm/glm.hpp
 -
@@ -13,6 +17,10 @@ vector
 -
 iostream
 -
+OBJFile.h
+/home/marco/ProyectosQt/ProyectoFinalCG/OBJFile.h
+
+/home/marco/ProyectosQt/ProyectoFinalCG/OBJFile.cpp
 OBJFile.h
 /home/marco/ProyectosQt/ProyectoFinalCG/OBJFile.h
 
@@ -38,6 +46,10 @@ vector
 iostream
 -
 
+/home/marco/ProyectosQt/ProyectoFinalCG/Topology.cpp
+Topology.h
+/home/marco/ProyectosQt/ProyectoFinalCG/Topology.h
+
 /home/marco/ProyectosQt/ProyectoFinalCG/Topology.h
 iostream
 -
@@ -60,6 +72,8 @@ fstream
 iostream
 -
 vector
+-
+iomanip
 -
 GL/glew.h
 -

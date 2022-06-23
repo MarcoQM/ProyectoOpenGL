@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <iomanip>
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
@@ -42,29 +43,24 @@ void calculateDistance( Geometry::Vertices &vertices, Topology::Edges &edges, st
 
 void calculateNormals(std::vector<glm::vec3> &primitives, std::vector<glm::vec3> &normals) 
 {
-    unsigned short index1, index2, index3;
-    glm::vec3 p1, p2, p3;
-    glm::vec3 normal;
-    glm::vec3 A, B;
+    glm::vec3 A, B, C, D, E, normal;
 
     for (unsigned int i = 0; i < primitives.size(); i+=3)
     {
+        A = primitives[i];
+        B = primitives[i+1];
+        C = primitives[i+2];
 
-        p1 = primitives[i];
-        p2 = primitives[i+1];
-        p3 = primitives[i+2];
+        D = B-A;
+        E = C-B;
 
-        A = p2 - p1;
-        B = p3 - p1;
-
-        normal.x = (A.y * B.z) - (A.z * B.y);
-        normal.y = (A.z * B.x) - (A.x * B.z);
-        normal.x = (A.x * B.y) - (A.y * B.x);
+        normal.x = D.y*E.z-D.z*E.y;
+        normal.y = D.z*E.x-D.x*E.z;
+        normal.z = D.x*E.y-D.y*E.x;
 
         normals[i] = normal;
         normals[i+1] = normal;
         normals[i+2] = normal;
-        //std::cout<<normal.x<<"\t"<<normal.y<<"\t"<<normal.z<<std::endl;
     }
 }
 
@@ -120,11 +116,6 @@ int main()
     std::vector<glm::vec3> normalsBunny(indicesBunny.size());
     calculateNormals(bunny, normalsBunny);
 
-    /*for(glm::vec3 &n: normalsBunny) {
-        std::cout<<n.x<<"\t"<<n.y<<"\t"<<n.z<<std::endl;
-    }*/
-   
-
     OBJFile objDragon("dragon1.obj");
 
     Geometry geometryDragon(objDragon);
@@ -143,7 +134,9 @@ int main()
     //Se calcula la distancia entre puntos de cada arista
     std::vector<float> distancesDragon(edgesDragon.size());
     calculateDistance(verticesDragon, edgesDragon, distancesDragon);
-
+    // Se calcula las normales
+    std::vector<glm::vec3> normalsDragon(indicesDragon.size());
+    calculateNormals(dragon, normalsDragon);
 
 
 
@@ -160,6 +153,10 @@ int main()
     glGenBuffers(1, &vbo[1]);
     glBindBuffer(GL_ARRAY_BUFFER, vbo[1]);
     glBufferData(GL_ARRAY_BUFFER, dragonNVertices * 3 * sizeof(float), &dragon[0], GL_STATIC_DRAW);
+
+    glGenBuffers(1, &vbo[3]); //normals dragon
+    glBindBuffer(GL_ARRAY_BUFFER, vbo[3]);
+    glBufferData(GL_ARRAY_BUFFER, normalsDragon.size()*3*sizeof(float), &normalsDragon[0], GL_STATIC_DRAW);
 
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0,3, GL_FLOAT, GL_FALSE, 0, nullptr);
@@ -311,7 +308,7 @@ int main()
 
         glm::mat4 vRot = glm::rotate(glm::mat4(1.f), angle, glm::vec3(0, 1, 0));
         // Giro de Camara
-        // vMat =  vMat*vRot;
+        //vMat =  vMat*vRot;
 
         // aminate here
         //light pyramid
@@ -353,9 +350,6 @@ int main()
 
         for (unsigned int i = 0; i < verticesBunny.size(); ++i)
         {
-            //velocityBunny[i] = velocityBunny[i] + (-0.98f / 1.f);
-            //bunny[i] = bunny[i] + h * velocityBunny[i];
-
             k1 = h * functionF(velocityBunny[i], timeBunny);
             k2 = h * functionF(velocityBunny[i] + k1 / 2.f, timeBunny + h / 2.f);
             velocityBunny[i] = velocityBunny[i] + k2;
@@ -366,9 +360,6 @@ int main()
 
         for (unsigned int i = 0; i < verticesDragon.size(); ++i)
         {
-            //velocityDragon[i] = velocityDragon[i] + (-0.98f / 1.f);
-            //dragon[i] = dragon[i] + h * velocityDragon[i];
-
             k1 = h * functionF(velocityDragon[i], timeDragon);
             k2 = h * functionF(velocityDragon[i] + k1 / 2.f, timeDragon + h / 2.f);
             velocityDragon[i] = velocityDragon[i] + k2;
@@ -388,7 +379,6 @@ int main()
             angle = 0;
 
         mMat = glm::translate(glm::mat4(1.f), glm::vec3(lockX, lockY, lockZ)) * mRot; // offset
-        // mMat = glm::translate(glm::mat4(1.f), glm::vec3(lockX, lockY, lockZ));
         sMat = glm::scale(glm::mat4(1.f), glm::vec3(12.f, 12.f, 12.f));
 
         // mvMat = vMat * mMat * sMat;
@@ -426,8 +416,15 @@ int main()
 
         glBindBuffer(GL_ARRAY_BUFFER, vbo[1]);
         glBufferData(GL_ARRAY_BUFFER, dragonNVertices * 3 * sizeof(float), &dragon[0], GL_STATIC_DRAW);
-
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
+        glEnableVertexAttribArray(0);
+
+        glBindBuffer(GL_ARRAY_BUFFER, vbo[3]); //dragon normals
+        glBufferData(GL_ARRAY_BUFFER, normalsDragon.size()*3 * sizeof(float)  , &normalsDragon[0], GL_STATIC_DRAW);
+        glVertexAttribPointer(1,3, GL_FLOAT, GL_FALSE, 0, nullptr);
+        glEnableVertexAttribArray(1);
+
+
         glDrawArrays(GL_TRIANGLES, 0, dragonNVertices);
 
         glfwSwapBuffers(window); // Buffers->OpenGL
